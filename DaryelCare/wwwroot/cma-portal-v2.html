@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ready Kids CMA – Application Management Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rk-primary: #0f5132;
+            --rk-primary-light: #198754;
+            --rk-primary-dark: #0a3622;
+            --rk-accent: #0d6efd;
+            --rk-accent-light: #6ea8fe;
+            
+            --status-complete: #198754;
+            --status-pending: #fd7e14;
+            --status-blocked: #dc3545;
+            --status-info: #0dcaf0;
+            --status-review: #6f42c1;
+            --status-draft: #6c757d;
+            
+            --risk-high: #dc3545;
+            --risk-medium: #fd7e14;
+            --risk-low: #198754;
+            
+            --bg-main: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-elevated: #ffffff;
+            --bg-subtle: #e9ecef;
+            --border-default: #dee2e6;
+            --border-strong: #adb5bd;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-muted: #adb5bd;
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+            --shadow-focus: 0 0 0 3px rgba(13,110,253,0.25);
+            
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--rk-primary-dark);
+            color: white;
+            padding: var(--space-lg);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: var(--space-lg);
+        }
+
+        .sidebar-brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--rk-primary-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-brand-text span {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 400;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav-item { margin-bottom: var(--space-xs); }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+        .sidebar-nav-link.active { background: var(--rk-primary-light); color: white; font-weight: 500; }
+        .sidebar-nav-link svg { width: 18px; height: 18px; opacity: 0.8; }
+
+        .sidebar-nav-badge {
+            margin-left: auto;
+            background: var(--risk-high);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .sidebar-nav-badge.info { background: var(--status-info); }
+        .sidebar-nav-badge.warning { background: var(--status-pending); }
+
+        .sidebar-section-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.4);
+            margin: var(--space-lg) 0 var(--space-sm) var(--space-md);
+        }
+
+        .sidebar-stats {
+            margin-top: auto;
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) 0;
+            font-size: 0.85rem;
+        }
+
+        .sidebar-stat-value {
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* MAIN CONTENT */
+        .main-content { padding: var(--space-xl); overflow-y: auto; }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-xl);
+        }
+
+        .main-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .main-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: var(--space-xs);
+        }
+
+        .header-actions { display: flex; gap: var(--space-sm); }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--rk-primary); color: white; }
+        .btn-primary:hover { background: var(--rk-primary-dark); }
+        .btn-secondary { background: var(--bg-subtle); color: var(--text-primary); }
+        .btn-secondary:hover { background: var(--border-default); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-default); color: var(--text-primary); }
+        .btn-outline:hover { background: var(--bg-subtle); }
+        .btn-danger { background: var(--risk-high); color: white; }
+        .btn-success { background: var(--status-complete); color: white; }
+        .btn-sm { padding: var(--space-xs) var(--space-sm); font-size: 0.8rem; }
+        .btn svg { width: 16px; height: 16px; }
+
+        /* STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card.urgent::before { background: var(--risk-high); }
+        .stat-card.warning::before { background: var(--risk-medium); }
+        .stat-card.success::before { background: var(--risk-low); }
+        .stat-card.info::before { background: var(--status-info); }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-card-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-card-trend {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+        }
+
+        .stat-card-trend.up { background: #d1e7dd; color: #0f5132; }
+        .stat-card-trend.down { background: #f8d7da; color: #842029; }
+
+        /* PIPELINE VIEW */
+        .pipeline-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-xl);
+            overflow: hidden;
+        }
+
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-default);
+            background: var(--bg-subtle);
+        }
+
+        .pipeline-title { font-weight: 600; font-size: 0.95rem; }
+
+        .pipeline-stages {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            min-height: 300px;
+        }
+
+        .pipeline-stage {
+            border-right: 1px solid var(--border-default);
+            padding: var(--space-md);
+            background: var(--bg-card);
+        }
+
+        .pipeline-stage:last-child { border-right: none; }
+
+        .pipeline-stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--border-default);
+        }
+
+        .pipeline-stage-header.stage-new { border-color: var(--status-info); }
+        .pipeline-stage-header.stage-checks { border-color: var(--status-pending); }
+        .pipeline-stage-header.stage-review { border-color: var(--status-review); }
+        .pipeline-stage-header.stage-approved { border-color: var(--status-complete); }
+        .pipeline-stage-header.stage-blocked { border-color: var(--status-blocked); }
+        .pipeline-stage-header.stage-registered { border-color: var(--rk-primary); }
+
+        .pipeline-stage-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .pipeline-stage-count {
+            font-size: 0.7rem;
+            background: var(--bg-subtle);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .pipeline-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .pipeline-card {
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+
+        .pipeline-card:hover { border-color: var(--rk-accent); box-shadow: var(--shadow-sm); }
+        .pipeline-card-name { font-weight: 600; font-size: 0.85rem; margin-bottom: 2px; }
+
+        .pipeline-card-ref {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .pipeline-card-progress {
+            height: 4px;
+            background: var(--border-default);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--space-xs);
+        }
+
+        .pipeline-card-progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+
+        .pipeline-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+        }
+
+        .pipeline-card-days { color: var(--text-secondary); }
+        .pipeline-card-days.overdue { color: var(--risk-high); font-weight: 600; }
+
+        .pipeline-card-risk { width: 8px; height: 8px; border-radius: 50%; }
+        .pipeline-card-risk.high { background: var(--risk-high); }
+        .pipeline-card-risk.medium { background: var(--risk-medium); }
+        .pipeline-card-risk.low { background: var(--risk-low); }
+
+        /* DETAIL PANEL */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -700px;
+            width: 700px;
+            height: 100vh;
+            background: var(--bg-card);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-panel.open { right: 0; }
+
+        .detail-panel-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .detail-panel-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        .detail-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .detail-header-title { font-size: 1.25rem; font-weight: 700; }
+        .detail-header-ref { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+
+        .detail-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s ease;
+        }
+
+        .detail-close:hover { background: var(--border-default); }
+
+        .detail-body { flex: 1; overflow-y: auto; padding: var(--space-lg); }
+        .detail-section { margin-bottom: var(--space-xl); }
+
+        .detail-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-xs);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border-default);
+            margin-bottom: var(--space-lg);
+        }
+
+        .tab {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border: none;
+            background: none;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.15s ease;
+        }
+
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--rk-primary); }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--rk-primary);
+        }
+
+        .tab-badge {
+            margin-left: 4px;
+            font-size: 0.7rem;
+            padding: 1px 6px;
+            border-radius: var(--radius-full);
+            background: var(--bg-subtle);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* COMPLIANCE GRID */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+        }
+
+        .compliance-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .compliance-item:hover { border-color: var(--border-strong); }
+
+        .compliance-item-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.7rem;
+        }
+
+        .compliance-item-icon.complete { background: var(--status-complete); color: white; }
+        .compliance-item-icon.pending { background: var(--status-pending); color: white; }
+        .compliance-item-icon.blocked { background: var(--status-blocked); color: white; }
+        .compliance-item-icon.not-started { background: var(--bg-subtle); border: 2px solid var(--border-strong); }
+
+        .compliance-item-text { flex: 1; }
+        .compliance-item-status { font-size: 0.7rem; color: var(--text-secondary); }
+
+        /* PERSON CARDS */
+        .person-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-sm);
+            border: 1px solid var(--border-default);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .person-card:hover { border-color: var(--rk-accent); box-shadow: var(--shadow-sm); }
+
+        .person-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+
+        .person-card-name { font-weight: 600; font-size: 0.9rem; }
+
+        .person-card-role {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+        }
+
+        .person-card-role.assistant { background: #cfe2ff; color: #084298; }
+        .person-card-role.household { background: #e2d9f3; color: #432874; }
+        .person-card-role.childminder { background: #d1e7dd; color: #0f5132; }
+
+        .person-card-checks { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
+
+        .person-check {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .person-check.complete { background: #d1e7dd; color: #0f5132; }
+        .person-check.pending { background: #fff3cd; color: #664d03; }
+        .person-check.blocked { background: #f8d7da; color: #842029; }
+        .person-check.not-started { background: var(--bg-subtle); color: var(--text-secondary); border: 1px dashed var(--border-strong); }
+
+        /* TIMELINE */
+        .timeline { position: relative; padding-left: var(--space-lg); }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-default);
+        }
+
+        .timeline-item { position: relative; padding-bottom: var(--space-md); }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border-strong);
+        }
+
+        .timeline-item.complete::before { background: var(--status-complete); border-color: var(--status-complete); }
+        .timeline-item.alert::before { background: var(--status-blocked); border-color: var(--status-blocked); }
+        .timeline-item.action::before { background: var(--status-info); border-color: var(--status-info); }
+
+        .timeline-item-time { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 2px; }
+        .timeline-item-text { font-size: 0.85rem; }
+
+        /* TABLES */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+
+        .data-table th {
+            text-align: left;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-subtle);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .data-table td {
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px solid var(--border-default);
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td { background: var(--bg-subtle); }
+        .data-table tr { cursor: pointer; }
+
+        /* STATUS BADGES */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+        }
+
+        .status-badge.complete { background: #d1e7dd; color: #0f5132; }
+        .status-badge.pending { background: #fff3cd; color: #664d03; }
+        .status-badge.blocked { background: #f8d7da; color: #842029; }
+        .status-badge.review { background: #e2d9f3; color: #432874; }
+        .status-badge.draft { background: #e9ecef; color: #495057; }
+        .status-badge.info { background: #cff4fc; color: #055160; }
+        .status-badge.registered { background: #0f5132; color: white; }
+
+        /* PROGRESS RING */
+        .progress-ring { width: 60px; height: 60px; position: relative; }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+
+        .progress-ring-bg { stroke: var(--border-default); }
+        .progress-ring-fill { stroke: var(--status-complete); transition: stroke-dashoffset 0.3s ease; }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ALERTS */
+        .alert-banner {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .alert-banner.warning { background: #fff3cd; border: 1px solid #ffecb5; }
+        .alert-banner.danger { background: #f8d7da; border: 1px solid #f5c2c7; }
+        .alert-banner.info { background: #cff4fc; border: 1px solid #b6effb; }
+        .alert-banner.success { background: #d1e7dd; border: 1px solid #badbcc; }
+
+        .alert-banner-icon { width: 24px; height: 24px; flex-shrink: 0; }
+        .alert-banner-content { flex: 1; }
+        .alert-banner-title { font-weight: 600; font-size: 0.9rem; }
+        .alert-banner-text { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+
+        /* OFSTED CHECK CARD */
+        .ofsted-check-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .ofsted-check-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .ofsted-check-title { font-weight: 600; font-size: 0.9rem; }
+
+        .ofsted-result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+        }
+
+        .ofsted-result-item {
+            padding: var(--space-sm);
+            background: var(--bg-subtle);
+            border-radius: var(--radius-sm);
+        }
+
+        .ofsted-result-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; }
+        .ofsted-result-value { font-size: 0.85rem; font-weight: 500; margin-top: 2px; }
+
+        /* FORM VIEWER */
+        .form-viewer {
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .form-viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .form-viewer-title { font-weight: 600; font-size: 0.9rem; }
+
+        .form-section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            padding: var(--space-sm) var(--space-md);
+            margin-bottom: var(--space-xs);
+        }
+
+        .form-field { margin-bottom: var(--space-sm); }
+        .form-field-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; }
+        .form-field-value { font-size: 0.85rem; font-weight: 500; }
+
+        /* MODAL */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-backdrop.open .modal { transform: scale(1) translateY(0); }
+
+        .modal-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title { font-size: 1.1rem; font-weight: 700; }
+        .modal-body { padding: var(--space-lg); max-height: 70vh; overflow-y: auto; }
+
+        .modal-footer {
+            padding: var(--space-md) var(--space-lg);
+            border-top: 1px solid var(--border-default);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+        }
+
+        /* FORM ELEMENTS */
+        .form-group { margin-bottom: var(--space-md); }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: var(--space-xs); }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .form-input:focus { outline: none; border-color: var(--rk-accent); box-shadow: var(--shadow-focus); }
+        .form-hint { font-size: 0.75rem; color: var(--text-secondary); margin-top: var(--space-xs); }
+
+        /* PRIORITY */
+        .priority-indicator { display: flex; align-items: center; gap: var(--space-xs); font-size: 0.75rem; font-weight: 600; }
+        .priority-indicator.high { color: var(--risk-high); }
+        .priority-indicator.medium { color: var(--risk-medium); }
+        .priority-indicator.low { color: var(--risk-low); }
+
+        .priority-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .priority-dot.high { background: var(--risk-high); }
+        .priority-dot.medium { background: var(--risk-medium); }
+        .priority-dot.low { background: var(--risk-low); }
+
+        /* VIEW SELECTOR */
+        .view-container { display: none; }
+        .view-container.active { display: block; }
+
+        /* REGISTERED BADGE */
+        .registered-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: var(--rk-primary);
+            color: white;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* SEARCH */
+        .search-bar { display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg); }
+        .search-input-wrapper { flex: 1; position: relative; }
+
+        .search-input {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md) var(--space-sm) 40px;
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus { outline: none; border-color: var(--rk-accent); box-shadow: var(--shadow-focus); }
+
+        .search-input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+        }
+
+        .filter-dropdown {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            background: var(--bg-card);
+        }
+
+        @media (max-width: 1200px) { .pipeline-stages { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) {
+            .app-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .pipeline-stages { grid-template-columns: 1fr; }
+            .detail-panel { width: 100%; right: -100%; }
+            .compliance-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">RK</div>
+                <div class="sidebar-brand-text">
+                    Ready Kids
+                    <span>CMA Portal</span>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link active" data-view="dashboard" onclick="switchView('dashboard')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-view="applications" onclick="switchView('applications')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            Applications
+                            <span class="sidebar-nav-badge info">15</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-view="persons" onclick="switchView('persons')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Connected Persons
+                            <span class="sidebar-nav-badge warning">12</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-view="ofsted" onclick="switchView('ofsted')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Ofsted Checks
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="sidebar-section-title">External Checks</div>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            DBS Status
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            LA Checks
+                            <span class="sidebar-nav-badge">3</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            GP Health
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            References
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="sidebar-section-title">System</div>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-stats">
+                <div class="sidebar-stat">
+                    <span>Avg. Processing</span>
+                    <span class="sidebar-stat-value">18.5d</span>
+                </div>
+                <div class="sidebar-stat">
+                    <span>This Month</span>
+                    <span class="sidebar-stat-value">+8</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view-container active">
+                <div class="main-header">
+                    <div>
+                        <h1 class="main-title">Application Management</h1>
+                        <p class="main-subtitle">Monitor and manage childminder registrations</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('newAppModal')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            New Application
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alert Banner -->
+                <div class="alert-banner danger">
+                    <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <div class="alert-banner-content">
+                        <div class="alert-banner-title">2 Applications Require Immediate Attention</div>
+                        <div class="alert-banner-text">DBS disclosure requires review, compliance deadline approaching</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger">View All</button>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card urgent">
+                        <span class="stat-card-trend down">↓ 1</span>
+                        <div class="stat-card-value">2</div>
+                        <div class="stat-card-label">Require Action</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <span class="stat-card-trend up">↑ 3</span>
+                        <div class="stat-card-value">6</div>
+                        <div class="stat-card-label">In Progress</div>
+                    </div>
+                    <div class="stat-card success">
+                        <span class="stat-card-trend up">↑ 15</span>
+                        <div class="stat-card-value">52</div>
+                        <div class="stat-card-label">Completed (YTD)</div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-card-value">3</div>
+                        <div class="stat-card-label">Registered</div>
+                    </div>
+                </div>
+
+                <!-- Pipeline View -->
+                <div class="pipeline-container">
+                    <div class="pipeline-header">
+                        <div class="pipeline-title">Application Pipeline</div>
+                        <div style="display: flex; gap: var(--space-sm);">
+                            <button class="btn btn-sm btn-outline">List View</button>
+                            <button class="btn btn-sm btn-secondary">Pipeline View</button>
+                        </div>
+                    </div>
+                    <div class="pipeline-stages" id="pipelineStages"></div>
+                </div>
+
+                <!-- Compliance Overview Table -->
+                <div class="pipeline-container">
+                    <div class="pipeline-header">
+                        <div class="pipeline-title">Compliance Check Status</div>
+                        <button class="btn btn-sm btn-outline">Export Matrix</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>DBS</th>
+                                <th>LA Check</th>
+                                <th>Ofsted</th>
+                                <th>GP Health</th>
+                                <th>References</th>
+                                <th>Training</th>
+                                <th>Stage</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complianceTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Applications View -->
+            <div id="applicationsView" class="view-container">
+                <div class="main-header">
+                    <div>
+                        <h1 class="main-title">All Applications</h1>
+                        <p class="main-subtitle">Complete list of childminder registrations</p>
+                    </div>
+                </div>
+                
+                <div class="search-bar">
+                    <div class="search-input-wrapper">
+                        <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="text" class="search-input" placeholder="Search applications..." id="appSearchInput">
+                    </div>
+                    <select class="filter-dropdown" id="stageFilter">
+                        <option value="">All Stages</option>
+                        <option value="new">New</option>
+                        <option value="form-submitted">Form Submitted</option>
+                        <option value="checks">Checks In Progress</option>
+                        <option value="review">Under Review</option>
+                        <option value="blocked">Blocked</option>
+                        <option value="approved">Approved</option>
+                        <option value="registered">Registered</option>
+                    </select>
+                </div>
+
+                <div class="pipeline-container">
+                    <table class="data-table" id="applicationsTable">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Applicant</th>
+                                <th>Local Authority</th>
+                                <th>Registers</th>
+                                <th>Progress</th>
+                                <th>Stage</th>
+                                <th>Days</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Connected Persons View -->
+            <div id="personsView" class="view-container">
+                <div class="main-header">
+                    <div>
+                        <h1 class="main-title">Connected Persons</h1>
+                        <p class="main-subtitle">Assistants, household members, and other connected individuals</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card info">
+                        <div class="stat-card-value">5</div>
+                        <div class="stat-card-label">Assistants</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-card-value">7</div>
+                        <div class="stat-card-label">Household Members</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-card-value">8</div>
+                        <div class="stat-card-label">Fully Cleared</div>
+                    </div>
+                    <div class="stat-card urgent">
+                        <div class="stat-card-value">4</div>
+                        <div class="stat-card-label">Checks Pending</div>
+                    </div>
+                </div>
+
+                <div class="pipeline-container">
+                    <div class="pipeline-header">
+                        <div class="pipeline-title">All Connected Persons</div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Connected To</th>
+                                <th>Form Status</th>
+                                <th>DBS</th>
+                                <th>LA Check</th>
+                                <th>Overall</th>
+                            </tr>
+                        </thead>
+                        <tbody id="personsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Ofsted Checks View -->
+            <div id="ofstedView" class="view-container">
+                <div class="main-header">
+                    <div>
+                        <h1 class="main-title">Ofsted History Checks</h1>
+                        <p class="main-subtitle">Known to Ofsted check results and history</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card success">
+                        <div class="stat-card-value">12</div>
+                        <div class="stat-card-label">Not Known</div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-card-value">3</div>
+                        <div class="stat-card-label">Previously Registered</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-card-value">2</div>
+                        <div class="stat-card-label">Pending Response</div>
+                    </div>
+                    <div class="stat-card urgent">
+                        <div class="stat-card-value">1</div>
+                        <div class="stat-card-label">Concerns Noted</div>
+                    </div>
+                </div>
+
+                <div id="ofstedChecksList"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Detail Panel Backdrop -->
+    <div class="detail-panel-backdrop" id="detailBackdrop" onclick="closeDetailPanel()"></div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <div>
+                <div class="detail-header-title" id="detailName"></div>
+                <div class="detail-header-ref" id="detailRef"></div>
+            </div>
+            <button class="detail-close" onclick="closeDetailPanel()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="detail-body" id="detailBody"></div>
+    </div>
+
+    <!-- Person Detail Modal -->
+    <div class="modal-backdrop" id="personModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="personModalTitle">Person Details</div>
+                <button class="detail-close" onclick="closeModal('personModal')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="personModalBody"></div>
+        </div>
+    </div>
+
+    <!-- New Application Modal -->
+    <div class="modal-backdrop" id="newAppModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Start New Application</div>
+                <button class="detail-close" onclick="closeModal('newAppModal')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Applicant Email Address</label>
+                    <input type="email" class="form-input" placeholder="applicant@email.com">
+                    <div class="form-hint">An invitation will be sent to complete Form CMA-1</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Applicant Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Registration Type</label>
+                    <select class="form-input">
+                        <option value="new">New Registration</option>
+                        <option value="transfer">Transfer from Ofsted</option>
+                        <option value="transfer-agency">Transfer from Another Agency</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('newAppModal')">Cancel</button>
+                <button class="btn btn-primary">Send Invitation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // DATA LOADING FROM API
+        // ==========================================
+
+        let applications = [];
+
+        async function loadApplications() {
+            try {
+                const res = await fetch('/api/applications');
+                applications = res.ok ? await res.json() : [];
+            } catch (e) {
+                console.error('Failed to load applications:', e);
+                applications = [];
+            }
+        }
+
+        const _hardcodedApplications = [
+            // FULLY REGISTERED - Complete journey
+            {
+                id: 'RK-2024-00098',
+                name: 'Rebecca Morrison',
+                email: 'rebecca.morrison@email.com',
+                phone: '07712 345678',
+                dob: '1985-03-15',
+                stage: 'registered',
+                startDate: '2024-08-15',
+                registrationDate: '2024-10-22',
+                lastUpdated: '2024-10-22',
+                daysInStage: 0,
+                risk: 'low',
+                progress: 100,
+                premisesType: 'domestic',
+                premisesAddress: '42 Willow Gardens, Bristol, BS8 4TH',
+                localAuthority: 'Bristol',
+                registers: ['0-5', '5-7'],
+                registrationNumber: 'EY123456',
+                checks: {
+                    dbs: { status: 'complete', date: '2024-08-28', certificate: '001234567890', details: 'Clear - No disclosures' },
+                    dbs_update: { status: 'complete', date: '2024-08-28', subscriptionId: 'U123456789' },
+                    la_check: { status: 'complete', date: '2024-09-10', details: 'No concerns - Bristol LA confirmed no records' },
+                    ofsted: { status: 'complete', date: '2024-09-05', details: 'Not previously known to Ofsted', knownToOfsted: false },
+                    gp_health: { status: 'complete', date: '2024-09-15', details: 'Fit to work with children - Dr. Smith, Clifton Medical Centre' },
+                    ref_1: { status: 'complete', date: '2024-09-08', referee: 'Jane Williams', relationship: 'Former Employer (Bright Stars Nursery)', recommendation: 'Excellent' },
+                    ref_2: { status: 'complete', date: '2024-09-12', referee: 'Dr. Michael Chen', relationship: 'Professional (Health Visitor)', recommendation: 'Highly Recommended' },
+                    first_aid: { status: 'complete', date: '2024-08-20', provider: 'St Johns Ambulance', expiryDate: '2027-08-20' },
+                    safeguarding: { status: 'complete', date: '2024-08-22', provider: 'EduCare', level: 'Level 3' },
+                    food_hygiene: { status: 'complete', date: '2024-08-25', level: 'Level 2' },
+                    insurance: { status: 'complete', date: '2024-10-01', provider: 'Morton Michel', policyNumber: 'MM-2024-789012', expiryDate: '2025-10-01' }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-RM-001',
+                        name: 'David Morrison',
+                        type: 'household',
+                        relationship: 'Spouse',
+                        dob: '1983-07-22',
+                        formStatus: 'complete',
+                        formSubmittedDate: '2024-08-25',
+                        formType: 'CMA-H2',
+                        address: '42 Willow Gardens, Bristol, BS8 4TH',
+                        moveInDate: '2015-06-01',
+                        previousNames: [],
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-09-02', certificate: '001234567891', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-09-12', details: 'No concerns' }
+                        },
+                        declaration: { signed: true, date: '2024-08-25' }
+                    },
+                    {
+                        id: 'CP-RM-002',
+                        name: 'Sophie Morrison',
+                        type: 'household',
+                        relationship: 'Daughter (aged 17)',
+                        dob: '2007-04-10',
+                        formStatus: 'complete',
+                        formSubmittedDate: '2024-08-26',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-09-05', certificate: '001234567892', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-09-15', details: 'No concerns' }
+                        },
+                        declaration: { signed: true, date: '2024-08-26' }
+                    }
+                ],
+                ofstedCheck: {
+                    requestDate: '2024-09-01',
+                    responseDate: '2024-09-05',
+                    status: 'Not Known',
+                    details: 'Individual is not known to Ofsted. No previous registrations found.',
+                    checkedBy: 'Ofsted Records Team',
+                    referenceNumber: 'OS-2024-78901'
+                },
+                timeline: [
+                    { date: '2024-10-22 10:00', event: 'Registration certificate issued - EY123456', type: 'complete' },
+                    { date: '2024-10-20 14:30', event: 'Ofsted notification submitted', type: 'complete' },
+                    { date: '2024-10-18 09:00', event: 'Final review completed - APPROVED', type: 'complete' },
+                    { date: '2024-10-01 11:00', event: 'Insurance certificate received', type: 'complete' },
+                    { date: '2024-09-15 15:30', event: 'GP health declaration received - fit to work', type: 'complete' },
+                    { date: '2024-09-12 10:00', event: 'Reference 2 received - positive', type: 'complete' },
+                    { date: '2024-09-10 14:00', event: 'LA check completed - no concerns', type: 'complete' },
+                    { date: '2024-09-08 09:30', event: 'Reference 1 received - excellent', type: 'complete' },
+                    { date: '2024-09-05 11:00', event: 'Ofsted history check - not known', type: 'complete' },
+                    { date: '2024-09-02 16:00', event: 'All household DBS checks complete', type: 'complete' },
+                    { date: '2024-08-28 10:15', event: 'DBS certificate received - clear', type: 'complete' },
+                    { date: '2024-08-20 14:00', event: 'Application form submitted', type: 'complete' },
+                    { date: '2024-08-15 09:00', event: 'Application started', type: 'action' }
+                ]
+            },
+            // REGISTERED - With Assistant
+            {
+                id: 'RK-2024-00105',
+                name: 'Angela Patterson',
+                email: 'angela.p@email.com',
+                phone: '07891 234567',
+                dob: '1979-11-08',
+                stage: 'registered',
+                startDate: '2024-09-01',
+                registrationDate: '2024-11-15',
+                lastUpdated: '2024-11-15',
+                daysInStage: 0,
+                risk: 'low',
+                progress: 100,
+                premisesType: 'domestic',
+                premisesAddress: '18 Oak Lane, Leeds, LS6 2AB',
+                localAuthority: 'Leeds',
+                registers: ['0-5', '5-7', '8+'],
+                registrationNumber: 'EY234567',
+                checks: {
+                    dbs: { status: 'complete', date: '2024-09-15', certificate: '001234567893', details: 'Clear' },
+                    dbs_update: { status: 'complete', date: '2024-09-15' },
+                    la_check: { status: 'complete', date: '2024-09-25', details: 'No concerns - Leeds confirmed' },
+                    ofsted: { status: 'complete', date: '2024-09-18', details: 'Previously registered - EY098765 (2015-2019) - No concerns', knownToOfsted: true, previousReg: 'EY098765' },
+                    gp_health: { status: 'complete', date: '2024-09-28', details: 'Fit to work' },
+                    ref_1: { status: 'complete', date: '2024-09-20', referee: 'Sarah Holmes', relationship: 'Previous Parent' },
+                    ref_2: { status: 'complete', date: '2024-09-22', referee: 'Mark Thompson', relationship: 'Professional' },
+                    first_aid: { status: 'complete', date: '2024-09-10', expiryDate: '2027-09-10' },
+                    safeguarding: { status: 'complete', date: '2024-09-12' },
+                    food_hygiene: { status: 'complete', date: '2024-09-14' },
+                    insurance: { status: 'complete', date: '2024-11-01', provider: 'Pacey Insurance', policyNumber: 'PI-2024-345678' }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-AP-001',
+                        name: 'Karen Mitchell',
+                        type: 'assistant',
+                        relationship: 'Assistant (Part-time)',
+                        dob: '1990-05-20',
+                        email: 'karen.m@email.com',
+                        formStatus: 'complete',
+                        formSubmittedDate: '2024-09-18',
+                        formType: 'CMA-A1',
+                        qualifications: ['Level 2 Childcare', 'Paediatric First Aid'],
+                        employmentHistory: [
+                            { employer: 'Little Stars Nursery', role: 'Nursery Assistant', from: '2018-03', to: '2024-08' },
+                            { employer: 'Self-employed Nanny', role: 'Nanny', from: '2015-06', to: '2018-02' }
+                        ],
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-09-28', certificate: '001234567894', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-10-05', details: 'No concerns' },
+                            ref_1: { status: 'complete', date: '2024-10-02', referee: 'Little Stars Nursery' }
+                        },
+                        declaration: { signed: true, date: '2024-09-18' }
+                    },
+                    {
+                        id: 'CP-AP-002',
+                        name: 'Robert Patterson',
+                        type: 'household',
+                        relationship: 'Husband',
+                        dob: '1977-02-14',
+                        formStatus: 'complete',
+                        formSubmittedDate: '2024-09-12',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-09-22', certificate: '001234567895', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-09-28', details: 'No concerns' }
+                        }
+                    }
+                ],
+                ofstedCheck: {
+                    requestDate: '2024-09-12',
+                    responseDate: '2024-09-18',
+                    status: 'Previously Registered',
+                    details: 'Previously registered as childminder (EY098765) from 2015-2019. Registration voluntarily cancelled. No enforcement actions. Last inspection: Good (2018).',
+                    previousRegistrations: [
+                        { number: 'EY098765', type: 'Childminder', from: '2015-04-01', to: '2019-08-31', reason: 'Voluntary cancellation', lastInspection: 'Good' }
+                    ],
+                    checkedBy: 'Ofsted Records Team',
+                    referenceNumber: 'OS-2024-78902'
+                },
+                timeline: [
+                    { date: '2024-11-15 11:00', event: 'Registration certificate issued - EY234567', type: 'complete' },
+                    { date: '2024-11-12 09:00', event: 'Final review completed - APPROVED', type: 'complete' },
+                    { date: '2024-10-05 14:00', event: 'Assistant Karen Mitchell fully cleared', type: 'complete' }
+                ]
+            },
+            // REGISTERED - Complex case with multiple assistants
+            {
+                id: 'RK-2024-00112',
+                name: 'Fatima Al-Hassan',
+                email: 'fatima.ah@email.com',
+                phone: '07456 789012',
+                dob: '1982-09-25',
+                stage: 'registered',
+                startDate: '2024-09-20',
+                registrationDate: '2024-12-05',
+                lastUpdated: '2024-12-05',
+                daysInStage: 0,
+                risk: 'low',
+                progress: 100,
+                premisesType: 'domestic',
+                premisesAddress: '7 Crescent Road, Manchester, M20 4BT',
+                localAuthority: 'Manchester',
+                registers: ['0-5'],
+                registrationNumber: 'EY345678',
+                checks: {
+                    dbs: { status: 'complete', date: '2024-10-02', certificate: '001234567896', details: 'Clear' },
+                    dbs_update: { status: 'complete', date: '2024-10-02' },
+                    la_check: { status: 'complete', date: '2024-10-15', details: 'No concerns - Manchester' },
+                    ofsted: { status: 'complete', date: '2024-10-08', details: 'Not known to Ofsted', knownToOfsted: false },
+                    gp_health: { status: 'complete', date: '2024-10-20', details: 'Fit to work' },
+                    ref_1: { status: 'complete', date: '2024-10-10' },
+                    ref_2: { status: 'complete', date: '2024-10-12' },
+                    first_aid: { status: 'complete', date: '2024-09-28', expiryDate: '2027-09-28' },
+                    safeguarding: { status: 'complete', date: '2024-09-30' },
+                    food_hygiene: { status: 'complete', date: '2024-10-01' },
+                    insurance: { status: 'complete', date: '2024-11-20' }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-FA-001',
+                        name: 'Yusuf Al-Hassan',
+                        type: 'household',
+                        relationship: 'Husband',
+                        dob: '1980-03-12',
+                        formStatus: 'complete',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-10-12', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-10-20', details: 'No concerns' }
+                        }
+                    },
+                    {
+                        id: 'CP-FA-002',
+                        name: 'Amira Al-Hassan',
+                        type: 'assistant',
+                        relationship: 'Assistant (Full-time)',
+                        dob: '1995-07-18',
+                        formStatus: 'complete',
+                        formType: 'CMA-A1',
+                        qualifications: ['Level 3 Early Years', 'Paediatric First Aid', 'Safeguarding Level 2'],
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-10-18', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-10-25', details: 'No concerns' },
+                            ref_1: { status: 'complete', date: '2024-10-22' }
+                        }
+                    },
+                    {
+                        id: 'CP-FA-003',
+                        name: 'Layla Mahmoud',
+                        type: 'assistant',
+                        relationship: 'Assistant (Part-time)',
+                        dob: '1992-11-05',
+                        formStatus: 'complete',
+                        formType: 'CMA-A1',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-10-22', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-10-28', details: 'No concerns' },
+                            ref_1: { status: 'complete', date: '2024-10-25' }
+                        }
+                    }
+                ],
+                ofstedCheck: {
+                    requestDate: '2024-10-01',
+                    responseDate: '2024-10-08',
+                    status: 'Not Known',
+                    details: 'No previous registrations found. Individual not known to Ofsted.',
+                    checkedBy: 'Ofsted Records Team',
+                    referenceNumber: 'OS-2024-78903'
+                },
+                timeline: [
+                    { date: '2024-12-05 10:00', event: 'Registration certificate issued - EY345678', type: 'complete' },
+                    { date: '2024-12-02 14:00', event: 'Final review - APPROVED', type: 'complete' }
+                ]
+            },
+            // APPROVED - Awaiting Ofsted notification
+            {
+                id: 'RK-2024-00125',
+                name: 'Emma Thompson',
+                email: 'emma.t@email.com',
+                phone: '07234 567890',
+                dob: '1988-06-12',
+                stage: 'approved',
+                startDate: '2024-10-15',
+                lastUpdated: '2024-12-16',
+                daysInStage: 2,
+                risk: 'low',
+                progress: 100,
+                premisesType: 'domestic',
+                premisesAddress: '23 Maple Street, Sheffield, S10 2GR',
+                localAuthority: 'Sheffield',
+                registers: ['0-5', '5-7'],
+                checks: {
+                    dbs: { status: 'complete', date: '2024-10-28', certificate: '001234567897', details: 'Clear' },
+                    dbs_update: { status: 'complete', date: '2024-10-28' },
+                    la_check: { status: 'complete', date: '2024-11-08', details: 'No concerns' },
+                    ofsted: { status: 'complete', date: '2024-11-02', details: 'Not known', knownToOfsted: false },
+                    gp_health: { status: 'complete', date: '2024-11-12', details: 'Fit to work' },
+                    ref_1: { status: 'complete', date: '2024-11-05' },
+                    ref_2: { status: 'complete', date: '2024-11-08' },
+                    first_aid: { status: 'complete', date: '2024-10-20' },
+                    safeguarding: { status: 'complete', date: '2024-10-22' },
+                    food_hygiene: { status: 'complete', date: '2024-10-25' },
+                    insurance: { status: 'complete', date: '2024-12-10' }
+                },
+                connectedPersons: [],
+                ofstedCheck: {
+                    requestDate: '2024-10-28',
+                    responseDate: '2024-11-02',
+                    status: 'Not Known',
+                    details: 'Individual not known to Ofsted.',
+                    referenceNumber: 'OS-2024-78904'
+                },
+                timeline: [
+                    { date: '2024-12-16 09:00', event: 'Application APPROVED - preparing Ofsted notification', type: 'complete' },
+                    { date: '2024-12-10 14:00', event: 'Insurance certificate received', type: 'complete' }
+                ]
+            },
+            // UNDER REVIEW
+            {
+                id: 'RK-2024-00130',
+                name: 'Sarah Johnson',
+                email: 'sarah.johnson@email.com',
+                phone: '07345 678901',
+                dob: '1990-02-28',
+                stage: 'review',
+                startDate: '2024-11-01',
+                lastUpdated: '2024-12-17',
+                daysInStage: 3,
+                risk: 'low',
+                progress: 95,
+                premisesType: 'domestic',
+                premisesAddress: '15 Rose Avenue, Bristol, BS3 4LP',
+                localAuthority: 'Bristol',
+                registers: ['0-5', '5-7'],
+                checks: {
+                    dbs: { status: 'complete', date: '2024-11-15', details: 'Clear' },
+                    dbs_update: { status: 'complete', date: '2024-11-15' },
+                    la_check: { status: 'complete', date: '2024-11-25', details: 'No concerns' },
+                    ofsted: { status: 'complete', date: '2024-11-18', details: 'Not known', knownToOfsted: false },
+                    gp_health: { status: 'complete', date: '2024-12-01' },
+                    ref_1: { status: 'complete', date: '2024-11-20' },
+                    ref_2: { status: 'complete', date: '2024-11-22' },
+                    first_aid: { status: 'complete', date: '2024-10-28' },
+                    safeguarding: { status: 'complete', date: '2024-10-30' },
+                    food_hygiene: { status: 'complete', date: '2024-11-02' },
+                    insurance: { status: 'pending', date: null, details: 'Awaiting certificate upload' }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-SJ-001',
+                        name: 'Michael Johnson',
+                        type: 'household',
+                        relationship: 'Spouse',
+                        dob: '1988-08-15',
+                        formStatus: 'complete',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-11-22', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-11-30', details: 'No concerns' }
+                        }
+                    }
+                ],
+                ofstedCheck: {
+                    requestDate: '2024-11-12',
+                    responseDate: '2024-11-18',
+                    status: 'Not Known',
+                    referenceNumber: 'OS-2024-78905'
+                },
+                timeline: [
+                    { date: '2024-12-17 10:00', event: 'Moved to final review - awaiting insurance', type: 'action' },
+                    { date: '2024-12-15 14:00', event: 'Insurance certificate requested', type: 'action' }
+                ]
+            },
+            // CHECKS IN PROGRESS - Multiple
+            {
+                id: 'RK-2024-00135',
+                name: 'Andrew Clarke',
+                email: 'andrew.c@email.com',
+                phone: '07456 789012',
+                dob: '1985-04-20',
+                stage: 'checks',
+                startDate: '2024-11-10',
+                lastUpdated: '2024-12-17',
+                daysInStage: 8,
+                risk: 'medium',
+                progress: 70,
+                premisesType: 'domestic',
+                premisesAddress: '8 Elm Court, Newcastle, NE3 4RT',
+                localAuthority: 'Newcastle',
+                registers: ['0-5', '5-7', '8+'],
+                checks: {
+                    dbs: { status: 'complete', date: '2024-11-25', details: 'Clear' },
+                    dbs_update: { status: 'complete', date: '2024-11-25' },
+                    la_check: { status: 'complete', date: '2024-12-05', details: 'No concerns' },
+                    ofsted: { status: 'complete', date: '2024-11-28', details: 'Not known' },
+                    gp_health: { status: 'pending', date: '2024-12-10', details: 'Awaiting GP response - follow-up sent' },
+                    ref_1: { status: 'complete', date: '2024-12-01' },
+                    ref_2: { status: 'complete', date: '2024-12-03' },
+                    first_aid: { status: 'complete', date: '2024-11-15' },
+                    safeguarding: { status: 'complete', date: '2024-11-18' },
+                    food_hygiene: { status: 'complete', date: '2024-11-20' },
+                    insurance: { status: 'pending', date: null }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-AC-001',
+                        name: 'Mary Clarke',
+                        type: 'assistant',
+                        relationship: 'Assistant',
+                        dob: '1992-10-08',
+                        formStatus: 'complete',
+                        formType: 'CMA-A1',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-12-05', details: 'Clear' },
+                            la_check: { status: 'complete', date: '2024-12-12', details: 'No concerns' },
+                            ref_1: { status: 'complete', date: '2024-12-08' }
+                        }
+                    }
+                ],
+                timeline: [
+                    { date: '2024-12-17 09:00', event: 'Second follow-up sent to GP surgery', type: 'action' },
+                    { date: '2024-12-10 14:00', event: 'GP health declaration form sent', type: 'action' }
+                ]
+            },
+            {
+                id: 'RK-2024-00138',
+                name: 'Priya Patel',
+                email: 'priya.p@email.com',
+                phone: '07567 890123',
+                dob: '1991-12-05',
+                stage: 'checks',
+                startDate: '2024-11-20',
+                lastUpdated: '2024-12-16',
+                daysInStage: 5,
+                risk: 'low',
+                progress: 55,
+                premisesType: 'domestic',
+                premisesAddress: '22 Orchard Way, Leicester, LE2 3TY',
+                localAuthority: 'Leicester',
+                registers: ['0-5'],
+                checks: {
+                    dbs: { status: 'pending', date: '2024-12-01', details: 'Application submitted - awaiting certificate' },
+                    dbs_update: { status: 'not-started', date: null },
+                    la_check: { status: 'pending', date: '2024-12-05', details: 'Request sent' },
+                    ofsted: { status: 'pending', date: '2024-12-02', details: 'Awaiting response' },
+                    gp_health: { status: 'not-started', date: null },
+                    ref_1: { status: 'pending', date: '2024-12-03', details: 'Request sent' },
+                    ref_2: { status: 'pending', date: '2024-12-03', details: 'Request sent' },
+                    first_aid: { status: 'complete', date: '2024-11-15' },
+                    safeguarding: { status: 'pending', date: null, details: 'Booked for 2024-12-20' },
+                    food_hygiene: { status: 'not-started', date: null },
+                    insurance: { status: 'not-started', date: null }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-PP-001',
+                        name: 'Raj Patel',
+                        type: 'household',
+                        relationship: 'Husband',
+                        formStatus: 'complete',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'pending', date: '2024-12-05', details: 'Submitted' },
+                            la_check: { status: 'not-started', date: null }
+                        }
+                    },
+                    {
+                        id: 'CP-PP-002',
+                        name: 'Meera Patel',
+                        type: 'household',
+                        relationship: 'Mother-in-law',
+                        formStatus: 'pending',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'not-started', date: null },
+                            la_check: { status: 'not-started', date: null }
+                        }
+                    }
+                ],
+                timeline: [
+                    { date: '2024-12-16 11:00', event: 'Reminder sent to Meera Patel for CMA-H2 form', type: 'action' }
+                ]
+            },
+            // BLOCKED - DBS Disclosure
+            {
+                id: 'RK-2024-00128',
+                name: 'David Williams',
+                email: 'david.w@email.com',
+                phone: '07678 901234',
+                dob: '1983-08-30',
+                stage: 'blocked',
+                startDate: '2024-10-28',
+                lastUpdated: '2024-12-14',
+                daysInStage: 12,
+                risk: 'high',
+                progress: 45,
+                premisesType: 'domestic',
+                premisesAddress: '5 Station Road, Manchester, M15 4PR',
+                localAuthority: 'Manchester',
+                registers: ['0-5', '5-7', '8+'],
+                checks: {
+                    dbs: { status: 'blocked', date: '2024-12-14', certificate: '001234567898', details: 'Disclosure: Caution for minor traffic offence (2019). Risk assessment required.' },
+                    dbs_update: { status: 'pending', date: null },
+                    la_check: { status: 'pending', date: '2024-12-01', details: 'Awaiting response' },
+                    ofsted: { status: 'complete', date: '2024-11-20', details: 'Previously registered - no concerns', knownToOfsted: true },
+                    gp_health: { status: 'not-started', date: null },
+                    ref_1: { status: 'complete', date: '2024-11-25' },
+                    ref_2: { status: 'complete', date: '2024-11-28' },
+                    first_aid: { status: 'not-started', date: null },
+                    safeguarding: { status: 'not-started', date: null },
+                    food_hygiene: { status: 'not-started', date: null },
+                    insurance: { status: 'not-started', date: null }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-DW-001',
+                        name: 'Lisa Williams',
+                        type: 'assistant',
+                        relationship: 'Assistant',
+                        formStatus: 'pending',
+                        formType: 'CMA-A1',
+                        checks: {
+                            dbs: { status: 'not-started', date: null },
+                            la_check: { status: 'not-started', date: null }
+                        }
+                    }
+                ],
+                ofstedCheck: {
+                    requestDate: '2024-11-15',
+                    responseDate: '2024-11-20',
+                    status: 'Previously Registered',
+                    details: 'Previously registered (EY555666) 2018-2021. No enforcement actions.',
+                    referenceNumber: 'OS-2024-78906'
+                },
+                timeline: [
+                    { date: '2024-12-14 11:00', event: 'DBS returned with disclosure - ESCALATED for risk assessment', type: 'alert' },
+                    { date: '2024-12-14 11:30', event: 'Application BLOCKED pending suitability review', type: 'alert' }
+                ]
+            },
+            // FORM SUBMITTED
+            {
+                id: 'RK-2024-00142',
+                name: 'Jennifer Brown',
+                email: 'jennifer.b@email.com',
+                phone: '07789 012345',
+                dob: '1987-05-18',
+                stage: 'form-submitted',
+                startDate: '2024-12-10',
+                lastUpdated: '2024-12-15',
+                daysInStage: 3,
+                risk: 'low',
+                progress: 20,
+                premisesType: 'domestic',
+                premisesAddress: '12 Cherry Lane, Birmingham, B15 2TR',
+                localAuthority: 'Birmingham',
+                registers: ['0-5', '5-7'],
+                checks: {
+                    dbs: { status: 'pending', date: '2024-12-15', details: 'Application initiated' },
+                    dbs_update: { status: 'not-started', date: null },
+                    la_check: { status: 'not-started', date: null },
+                    ofsted: { status: 'pending', date: '2024-12-15', details: 'Request submitted' },
+                    gp_health: { status: 'not-started', date: null },
+                    ref_1: { status: 'pending', date: '2024-12-15', details: 'Request sent' },
+                    ref_2: { status: 'pending', date: '2024-12-15', details: 'Request sent' },
+                    first_aid: { status: 'complete', date: '2024-12-01' },
+                    safeguarding: { status: 'complete', date: '2024-12-05' },
+                    food_hygiene: { status: 'not-started', date: null },
+                    insurance: { status: 'not-started', date: null }
+                },
+                connectedPersons: [],
+                timeline: [
+                    { date: '2024-12-15 10:00', event: 'DBS application initiated', type: 'action' },
+                    { date: '2024-12-15 09:30', event: 'Application form reviewed and accepted', type: 'complete' },
+                    { date: '2024-12-12 14:00', event: 'Application form submitted', type: 'complete' }
+                ]
+            },
+            // NEW
+            {
+                id: 'RK-2024-00145',
+                name: 'James Mitchell',
+                email: 'james.m@email.com',
+                phone: '07890 123456',
+                dob: '1984-01-25',
+                stage: 'new',
+                startDate: '2024-12-15',
+                lastUpdated: '2024-12-15',
+                daysInStage: 3,
+                risk: 'low',
+                progress: 5,
+                premisesType: 'non-domestic',
+                premisesAddress: 'Unit 5, Community Centre, Birmingham, B20 3RD',
+                localAuthority: 'Birmingham',
+                registers: ['0-5', '5-7'],
+                checks: {
+                    dbs: { status: 'not-started', date: null },
+                    dbs_update: { status: 'not-started', date: null },
+                    la_check: { status: 'not-started', date: null },
+                    ofsted: { status: 'not-started', date: null },
+                    gp_health: { status: 'not-started', date: null },
+                    ref_1: { status: 'not-started', date: null },
+                    ref_2: { status: 'not-started', date: null },
+                    first_aid: { status: 'not-started', date: null },
+                    safeguarding: { status: 'not-started', date: null },
+                    food_hygiene: { status: 'not-started', date: null },
+                    insurance: { status: 'not-started', date: null }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-JM-001',
+                        name: 'Sophie Mitchell',
+                        type: 'assistant',
+                        relationship: 'Assistant',
+                        formStatus: 'not-started',
+                        formType: 'CMA-A1',
+                        checks: {
+                            dbs: { status: 'not-started', date: null },
+                            la_check: { status: 'not-started', date: null }
+                        }
+                    }
+                ],
+                timeline: [
+                    { date: '2024-12-15 16:00', event: 'Application invitation sent', type: 'action' }
+                ]
+            },
+            {
+                id: 'RK-2024-00146',
+                name: 'Lucy Chen',
+                email: 'lucy.c@email.com',
+                phone: '07901 234567',
+                dob: '1993-07-10',
+                stage: 'new',
+                startDate: '2024-12-17',
+                lastUpdated: '2024-12-17',
+                daysInStage: 1,
+                risk: 'low',
+                progress: 5,
+                premisesType: 'domestic',
+                localAuthority: 'London - Camden',
+                registers: ['0-5'],
+                checks: {
+                    dbs: { status: 'not-started', date: null },
+                    dbs_update: { status: 'not-started', date: null },
+                    la_check: { status: 'not-started', date: null },
+                    ofsted: { status: 'not-started', date: null },
+                    gp_health: { status: 'not-started', date: null },
+                    ref_1: { status: 'not-started', date: null },
+                    ref_2: { status: 'not-started', date: null },
+                    first_aid: { status: 'not-started', date: null },
+                    safeguarding: { status: 'not-started', date: null },
+                    food_hygiene: { status: 'not-started', date: null },
+                    insurance: { status: 'not-started', date: null }
+                },
+                connectedPersons: [],
+                timeline: [
+                    { date: '2024-12-17 11:00', event: 'Application invitation sent', type: 'action' }
+                ]
+            },
+            // Additional checks in progress
+            {
+                id: 'RK-2024-00133',
+                name: 'Helen Roberts',
+                email: 'helen.r@email.com',
+                phone: '07012 345678',
+                dob: '1986-11-15',
+                stage: 'checks',
+                startDate: '2024-11-05',
+                lastUpdated: '2024-12-16',
+                daysInStage: 10,
+                risk: 'medium',
+                progress: 65,
+                premisesType: 'domestic',
+                premisesAddress: '34 Park View, Liverpool, L18 1DF',
+                localAuthority: 'Liverpool',
+                registers: ['0-5', '5-7'],
+                checks: {
+                    dbs: { status: 'complete', date: '2024-11-20', details: 'Clear' },
+                    dbs_update: { status: 'complete', date: '2024-11-20' },
+                    la_check: { status: 'pending', date: '2024-11-25', details: 'Follow-up sent to Liverpool LA' },
+                    ofsted: { status: 'complete', date: '2024-11-22', details: 'Not known' },
+                    gp_health: { status: 'complete', date: '2024-12-05', details: 'Fit to work' },
+                    ref_1: { status: 'complete', date: '2024-11-28' },
+                    ref_2: { status: 'pending', date: '2024-11-28', details: 'Awaiting response from referee' },
+                    first_aid: { status: 'complete', date: '2024-11-01' },
+                    safeguarding: { status: 'complete', date: '2024-11-03' },
+                    food_hygiene: { status: 'not-started', date: null },
+                    insurance: { status: 'not-started', date: null }
+                },
+                connectedPersons: [
+                    {
+                        id: 'CP-HR-001',
+                        name: 'Peter Roberts',
+                        type: 'household',
+                        relationship: 'Partner',
+                        formStatus: 'complete',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-12-01', details: 'Clear' },
+                            la_check: { status: 'pending', date: '2024-12-05' }
+                        }
+                    },
+                    {
+                        id: 'CP-HR-002',
+                        name: 'Tom Roberts',
+                        type: 'household',
+                        relationship: 'Son (aged 18)',
+                        formStatus: 'complete',
+                        formType: 'CMA-H2',
+                        checks: {
+                            dbs: { status: 'complete', date: '2024-12-03', details: 'Clear' },
+                            la_check: { status: 'pending', date: '2024-12-08' }
+                        }
+                    }
+                ],
+                timeline: [
+                    { date: '2024-12-16 09:00', event: 'Follow-up sent to Reference 2', type: 'action' },
+                    { date: '2024-12-10 14:00', event: 'Follow-up sent to Liverpool LA', type: 'action' }
+                ]
+            }
+        ]; // end _hardcodedApplications (kept as fallback, not used when API is available)
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+
+        function getProgressColor(progress) {
+            if (progress >= 80) return 'var(--status-complete)';
+            if (progress >= 50) return 'var(--status-pending)';
+            return 'var(--status-info)';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function getCheckIcon(status) {
+            const icons = { 'complete': '✓', 'pending': '◔', 'blocked': '!', 'not-started': '○', 'expired': '⚠' };
+            return icons[status] || '○';
+        }
+
+        function getStageLabel(stage) {
+            const labels = {
+                'new': 'New', 'form-submitted': 'Form Submitted', 'checks': 'In Progress',
+                'review': 'Review', 'approved': 'Approved', 'blocked': 'Blocked', 'registered': 'Registered'
+            };
+            return labels[stage] || stage;
+        }
+
+        function getStageClass(stage) {
+            const classes = {
+                'new': 'info', 'form-submitted': 'info', 'checks': 'pending',
+                'review': 'review', 'approved': 'complete', 'blocked': 'blocked', 'registered': 'registered'
+            };
+            return classes[stage] || 'draft';
+        }
+
+        // ==========================================
+        // VIEW SWITCHING
+        // ==========================================
+
+        function switchView(viewName) {
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById(viewName + 'View').classList.add('active');
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+
+            if (viewName === 'ofsted') renderOfstedView();
+            if (viewName === 'persons') renderPersonsView();
+            if (viewName === 'applications') renderApplicationsTable();
+        }
+
+        // ==========================================
+        // RENDER FUNCTIONS
+        // ==========================================
+
+        function renderPipeline() {
+            const container = document.getElementById('pipelineStages');
+            const stages = [
+                { id: 'new', label: 'New', headerClass: 'stage-new' },
+                { id: 'form-submitted', label: 'Form Submitted', headerClass: 'stage-new' },
+                { id: 'checks', label: 'Checks In Progress', headerClass: 'stage-checks' },
+                { id: 'review', label: 'Under Review', headerClass: 'stage-review' },
+                { id: 'blocked', label: 'Blocked', headerClass: 'stage-blocked' },
+                { id: 'approved', label: 'Approved / Registered', headerClass: 'stage-approved' }
+            ];
+
+            container.innerHTML = stages.map(stage => {
+                let stageApps = applications.filter(a => a.stage === stage.id);
+                if (stage.id === 'approved') {
+                    stageApps = applications.filter(a => a.stage === 'approved' || a.stage === 'registered');
+                }
+                return `
+                    <div class="pipeline-stage" data-stage="${stage.id}">
+                        <div class="pipeline-stage-header ${stage.headerClass}">
+                            <span class="pipeline-stage-title">${stage.label}</span>
+                            <span class="pipeline-stage-count">${stageApps.length}</span>
+                        </div>
+                        <div class="pipeline-cards">
+                            ${stageApps.map(app => `
+                                <div class="pipeline-card" onclick="openDetailPanel('${app.id}')">
+                                    <div class="pipeline-card-name">${app.name}</div>
+                                    <div class="pipeline-card-ref">${app.id}</div>
+                                    <div class="pipeline-card-progress">
+                                        <div class="pipeline-card-progress-fill" style="width: ${app.progress}%; background: ${getProgressColor(app.progress)}"></div>
+                                    </div>
+                                    <div class="pipeline-card-meta">
+                                        <span class="pipeline-card-days ${app.daysInStage > 14 ? 'overdue' : ''}">${app.stage === 'registered' ? 'Complete' : app.daysInStage + 'd'}</span>
+                                        <span class="pipeline-card-risk ${app.risk}"></span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderComplianceTable() {
+            const tbody = document.getElementById('complianceTableBody');
+            tbody.innerHTML = applications.filter(a => a.stage !== 'new').map(app => `
+                <tr onclick="openDetailPanel('${app.id}')">
+                    <td>
+                        <div style="font-weight: 600;">${app.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.id}</div>
+                    </td>
+                    <td><span class="status-badge ${app.checks.dbs.status}">${getCheckIcon(app.checks.dbs.status)}</span></td>
+                    <td><span class="status-badge ${app.checks.la_check.status}">${getCheckIcon(app.checks.la_check.status)}</span></td>
+                    <td><span class="status-badge ${app.checks.ofsted.status}">${getCheckIcon(app.checks.ofsted.status)}</span></td>
+                    <td><span class="status-badge ${app.checks.gp_health.status}">${getCheckIcon(app.checks.gp_health.status)}</span></td>
+                    <td><span class="status-badge ${app.checks.ref_1.status === 'complete' && app.checks.ref_2.status === 'complete' ? 'complete' : app.checks.ref_1.status === 'pending' || app.checks.ref_2.status === 'pending' ? 'pending' : 'not-started'}">${getCheckIcon(app.checks.ref_1.status === 'complete' && app.checks.ref_2.status === 'complete' ? 'complete' : 'pending')}</span></td>
+                    <td><span class="status-badge ${app.checks.first_aid.status === 'complete' && app.checks.safeguarding.status === 'complete' ? 'complete' : 'pending'}">${getCheckIcon(app.checks.first_aid.status === 'complete' ? 'complete' : 'pending')}</span></td>
+                    <td><span class="status-badge ${getStageClass(app.stage)}">${getStageLabel(app.stage)}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderApplicationsTable() {
+            const tbody = document.getElementById('applicationsTableBody');
+            tbody.innerHTML = applications.map(app => `
+                <tr onclick="openDetailPanel('${app.id}')">
+                    <td><span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">${app.id}</span></td>
+                    <td>
+                        <div style="font-weight: 600;">${app.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.email}</div>
+                    </td>
+                    <td>${app.localAuthority}</td>
+                    <td>${app.registers.join(', ')}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 60px; height: 6px; background: var(--border-default); border-radius: 3px; overflow: hidden;">
+                                <div style="width: ${app.progress}%; height: 100%; background: ${getProgressColor(app.progress)};"></div>
+                            </div>
+                            <span style="font-size: 0.75rem;">${app.progress}%</span>
+                        </div>
+                    </td>
+                    <td><span class="status-badge ${getStageClass(app.stage)}">${getStageLabel(app.stage)}</span></td>
+                    <td>${app.stage === 'registered' ? '-' : app.daysInStage + 'd'}</td>
+                    <td><button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); openDetailPanel('${app.id}')">View</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPersonsView() {
+            const allPersons = [];
+            applications.forEach(app => {
+                app.connectedPersons.forEach(person => {
+                    allPersons.push({ ...person, connectedTo: app.name, appId: app.id, appRef: app.id });
+                });
+            });
+
+            const tbody = document.getElementById('personsTableBody');
+            tbody.innerHTML = allPersons.map(person => {
+                const allComplete = person.checks.dbs?.status === 'complete' && person.checks.la_check?.status === 'complete';
+                return `
+                    <tr onclick="openPersonModal('${person.id}', '${person.appId}')">
+                        <td><div style="font-weight: 600;">${person.name}</div></td>
+                        <td><span class="person-card-role ${person.type}">${person.type === 'assistant' ? 'Assistant' : 'Household'}</span></td>
+                        <td>
+                            <div>${person.connectedTo}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-secondary);">${person.appRef}</div>
+                        </td>
+                        <td><span class="status-badge ${person.formStatus}">${person.formStatus}</span></td>
+                        <td><span class="status-badge ${person.checks.dbs?.status || 'not-started'}">${getCheckIcon(person.checks.dbs?.status || 'not-started')}</span></td>
+                        <td><span class="status-badge ${person.checks.la_check?.status || 'not-started'}">${getCheckIcon(person.checks.la_check?.status || 'not-started')}</span></td>
+                        <td><span class="status-badge ${allComplete ? 'complete' : 'pending'}">${allComplete ? 'Cleared' : 'Pending'}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderOfstedView() {
+            const container = document.getElementById('ofstedChecksList');
+            const appsWithOfsted = applications.filter(a => a.ofstedCheck);
+
+            container.innerHTML = `
+                <div class="pipeline-container">
+                    <div class="pipeline-header">
+                        <div class="pipeline-title">Completed Ofsted History Checks</div>
+                    </div>
+                    <div style="padding: var(--space-lg);">
+                        ${appsWithOfsted.map(app => `
+                            <div class="ofsted-check-card">
+                                <div class="ofsted-check-header">
+                                    <div>
+                                        <div class="ofsted-check-title">${app.name}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.id}</div>
+                                    </div>
+                                    <span class="status-badge ${app.ofstedCheck.status === 'Not Known' ? 'complete' : app.ofstedCheck.status === 'Previously Registered' ? 'info' : 'warning'}">${app.ofstedCheck.status}</span>
+                                </div>
+                                <div class="ofsted-result-grid">
+                                    <div class="ofsted-result-item">
+                                        <div class="ofsted-result-label">Request Date</div>
+                                        <div class="ofsted-result-value">${formatDate(app.ofstedCheck.requestDate)}</div>
+                                    </div>
+                                    <div class="ofsted-result-item">
+                                        <div class="ofsted-result-label">Response Date</div>
+                                        <div class="ofsted-result-value">${formatDate(app.ofstedCheck.responseDate)}</div>
+                                    </div>
+                                    <div class="ofsted-result-item" style="grid-column: span 2;">
+                                        <div class="ofsted-result-label">Ofsted Reference</div>
+                                        <div class="ofsted-result-value">${app.ofstedCheck.referenceNumber}</div>
+                                    </div>
+                                    <div class="ofsted-result-item" style="grid-column: span 2;">
+                                        <div class="ofsted-result-label">Details</div>
+                                        <div class="ofsted-result-value">${app.ofstedCheck.details}</div>
+                                    </div>
+                                    ${app.ofstedCheck.previousRegistrations ? `
+                                        <div class="ofsted-result-item" style="grid-column: span 2; background: #fff3cd;">
+                                            <div class="ofsted-result-label">Previous Registration History</div>
+                                            ${app.ofstedCheck.previousRegistrations.map(reg => `
+                                                <div class="ofsted-result-value">
+                                                    ${reg.number} (${reg.type}) - ${reg.from} to ${reg.to}<br>
+                                                    <span style="font-size: 0.8rem;">Reason: ${reg.reason} | Last Inspection: ${reg.lastInspection}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                <div style="margin-top: var(--space-md); display: flex; gap: var(--space-sm);">
+                                    <button class="btn btn-sm btn-outline" onclick="openDetailPanel('${app.id}')">View Application</button>
+                                    <button class="btn btn-sm btn-secondary">Download PDF</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // DETAIL PANEL
+        // ==========================================
+
+        function openDetailPanel(appId) {
+            const app = applications.find(a => a.id === appId);
+            if (!app) return;
+
+            document.getElementById('detailName').textContent = app.name;
+            document.getElementById('detailRef').textContent = app.id;
+            document.getElementById('detailBody').innerHTML = renderDetailContent(app);
+            document.getElementById('detailPanel').classList.add('open');
+            document.getElementById('detailBackdrop').classList.add('open');
+
+            // Initialize tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const tabId = e.target.dataset.tab;
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    e.target.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        function closeDetailPanel() {
+            document.getElementById('detailPanel').classList.remove('open');
+            document.getElementById('detailBackdrop').classList.remove('open');
+        }
+
+        function renderDetailContent(app) {
+            const circumference = 2 * Math.PI * 24;
+            const offset = circumference - (app.progress / 100) * circumference;
+
+            return `
+                <!-- Status Header -->
+                ${app.stage === 'registered' ? `
+                    <div class="alert-banner success" style="margin-bottom: var(--space-lg);">
+                        <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <div class="alert-banner-content">
+                            <div class="alert-banner-title">Registered Childminder</div>
+                            <div class="alert-banner-text">Registration Number: ${app.registrationNumber} | Registered: ${formatDate(app.registrationDate)}</div>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${app.stage === 'blocked' ? `
+                    <div class="alert-banner danger" style="margin-bottom: var(--space-lg);">
+                        <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <div class="alert-banner-content">
+                            <div class="alert-banner-title">Application Blocked</div>
+                            <div class="alert-banner-text">${app.checks.dbs.details}</div>
+                        </div>
+                        <button class="btn btn-sm btn-danger">Risk Assessment</button>
+                    </div>
+                ` : ''}
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="overviewTab">Overview</button>
+                    <button class="tab" data-tab="checksTab">Compliance<span class="tab-badge">${Object.values(app.checks).filter(c => c.status === 'complete').length}/${Object.keys(app.checks).length}</span></button>
+                    <button class="tab" data-tab="personsTab">Persons<span class="tab-badge">${app.connectedPersons.length}</span></button>
+                    <button class="tab" data-tab="timelineTab">Timeline</button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="overviewTab" class="tab-content active">
+                    <div style="display: flex; gap: var(--space-lg); align-items: flex-start; margin-bottom: var(--space-lg);">
+                        <div class="progress-ring">
+                            <svg width="60" height="60">
+                                <circle class="progress-ring-circle progress-ring-bg" cx="30" cy="30" r="24"/>
+                                <circle class="progress-ring-circle progress-ring-fill" cx="30" cy="30" r="24" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="stroke: ${getProgressColor(app.progress)}"/>
+                            </svg>
+                            <span class="progress-ring-text">${app.progress}%</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-sm);">
+                                <div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">Stage</div>
+                                    <div><span class="status-badge ${getStageClass(app.stage)}">${getStageLabel(app.stage)}</span></div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">Risk</div>
+                                    <div class="priority-indicator ${app.risk}">
+                                        <span class="priority-dot ${app.risk}"></span>
+                                        ${app.risk.charAt(0).toUpperCase() + app.risk.slice(1)}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">Start Date</div>
+                                    <div style="font-weight: 500;">${formatDate(app.startDate)}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">Days in Stage</div>
+                                    <div style="font-weight: 500; ${app.daysInStage > 14 && app.stage !== 'registered' ? 'color: var(--risk-high);' : ''}">${app.stage === 'registered' ? 'Complete' : app.daysInStage + ' days'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-title">Personal Details</div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); background: var(--bg-subtle); padding: var(--space-md); border-radius: var(--radius-md);">
+                            <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Email</div><div style="font-weight: 500;">${app.email}</div></div>
+                            <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Phone</div><div style="font-weight: 500;">${app.phone || '-'}</div></div>
+                            <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Date of Birth</div><div style="font-weight: 500;">${formatDate(app.dob)}</div></div>
+                            <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Premises Type</div><div style="font-weight: 500;">${app.premisesType?.charAt(0).toUpperCase() + app.premisesType?.slice(1)}</div></div>
+                            <div style="grid-column: span 2;"><div style="font-size: 0.7rem; color: var(--text-secondary);">Address</div><div style="font-weight: 500;">${app.premisesAddress || 'Not provided'}</div></div>
+                            <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Local Authority</div><div style="font-weight: 500;">${app.localAuthority}</div></div>
+                            <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Registers</div><div style="font-weight: 500;">${app.registers.join(', ')}</div></div>
+                        </div>
+                    </div>
+
+                    ${app.ofstedCheck ? `
+                        <div class="detail-section">
+                            <div class="detail-section-title">Ofsted History Check</div>
+                            <div class="ofsted-check-card" style="margin-bottom: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                                    <span class="status-badge ${app.ofstedCheck.status === 'Not Known' ? 'complete' : 'info'}">${app.ofstedCheck.status}</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">${app.ofstedCheck.referenceNumber}</span>
+                                </div>
+                                <div style="font-size: 0.85rem;">${app.ofstedCheck.details}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <!-- Compliance Tab -->
+                <div id="checksTab" class="tab-content">
+                    <div class="compliance-grid">
+                        ${renderComplianceItem('DBS Enhanced', app.checks.dbs)}
+                        ${renderComplianceItem('DBS Update Service', app.checks.dbs_update)}
+                        ${renderComplianceItem('LA Check', app.checks.la_check)}
+                        ${renderComplianceItem('Ofsted History', app.checks.ofsted)}
+                        ${renderComplianceItem('GP Health Declaration', app.checks.gp_health)}
+                        ${renderComplianceItem('Reference 1', app.checks.ref_1)}
+                        ${renderComplianceItem('Reference 2', app.checks.ref_2)}
+                        ${renderComplianceItem('Paediatric First Aid', app.checks.first_aid)}
+                        ${renderComplianceItem('Safeguarding', app.checks.safeguarding)}
+                        ${renderComplianceItem('Food Hygiene', app.checks.food_hygiene)}
+                        ${renderComplianceItem('Insurance', app.checks.insurance)}
+                    </div>
+                </div>
+
+                <!-- Persons Tab -->
+                <div id="personsTab" class="tab-content">
+                    ${app.connectedPersons.length === 0 ? `
+                        <div style="text-align: center; padding: var(--space-xl); color: var(--text-secondary);">
+                            <div style="font-size: 2rem; margin-bottom: var(--space-sm);">👤</div>
+                            <div>No connected persons listed</div>
+                        </div>
+                    ` : app.connectedPersons.map(person => `
+                        <div class="person-card" onclick="openPersonModal('${person.id}', '${app.id}')">
+                            <div class="person-card-header">
+                                <div class="person-card-name">${person.name}</div>
+                                <span class="person-card-role ${person.type}">${person.type === 'assistant' ? 'Assistant' : 'Household'}</span>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: var(--space-sm);">
+                                ${person.relationship} | Form: <span class="status-badge ${person.formStatus}" style="font-size: 0.7rem;">${person.formStatus}</span>
+                            </div>
+                            <div class="person-card-checks">
+                                <span class="person-check ${person.checks.dbs?.status || 'not-started'}">DBS ${getCheckIcon(person.checks.dbs?.status || 'not-started')}</span>
+                                <span class="person-check ${person.checks.la_check?.status || 'not-started'}">LA ${getCheckIcon(person.checks.la_check?.status || 'not-started')}</span>
+                                ${person.checks.ref_1 ? `<span class="person-check ${person.checks.ref_1.status}">Ref ${getCheckIcon(person.checks.ref_1.status)}</span>` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                    <button class="btn btn-sm btn-outline" style="margin-top: var(--space-sm);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add Person
+                    </button>
+                </div>
+
+                <!-- Timeline Tab -->
+                <div id="timelineTab" class="tab-content">
+                    <div class="timeline">
+                        ${app.timeline.map(item => `
+                            <div class="timeline-item ${item.type}">
+                                <div class="timeline-item-time">${item.date}</div>
+                                <div class="timeline-item-text">${item.event}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="detail-section" style="margin-top: var(--space-xl);">
+                    <div class="detail-section-title">Quick Actions</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm);">
+                        ${app.stage !== 'registered' ? `<button class="btn btn-primary btn-sm">Send Reminder</button>` : ''}
+                        <button class="btn btn-secondary btn-sm">View Forms</button>
+                        <button class="btn btn-secondary btn-sm">Generate Report</button>
+                        <button class="btn btn-outline btn-sm">Add Note</button>
+                        ${app.stage === 'review' ? `<button class="btn btn-success btn-sm">Approve Application</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderComplianceItem(label, check) {
+            return `
+                <div class="compliance-item">
+                    <div class="compliance-item-icon ${check.status}">${getCheckIcon(check.status)}</div>
+                    <div class="compliance-item-text">
+                        <div style="font-weight: 500;">${label}</div>
+                        <div class="compliance-item-status">
+                            ${check.status === 'complete' ? formatDate(check.date) : 
+                              check.status === 'pending' ? (check.details || 'Awaiting') : 
+                              check.status === 'blocked' ? 'Action Required' : 'Not Started'}
+                        </div>
+                        ${check.details && check.status === 'complete' ? `<div style="font-size: 0.7rem; color: var(--text-secondary);">${check.details}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // PERSON MODAL
+        // ==========================================
+
+        function openPersonModal(personId, appId) {
+            const app = applications.find(a => a.id === appId);
+            const person = app?.connectedPersons.find(p => p.id === personId);
+            if (!person) return;
+
+            document.getElementById('personModalTitle').textContent = person.name;
+            document.getElementById('personModalBody').innerHTML = `
+                <div style="margin-bottom: var(--space-lg);">
+                    <span class="person-card-role ${person.type}" style="font-size: 0.85rem;">${person.type === 'assistant' ? 'Assistant (CMA-A1)' : 'Household Member (CMA-H2)'}</span>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-section-title">Personal Information</div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); background: var(--bg-subtle); padding: var(--space-md); border-radius: var(--radius-md);">
+                        <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Full Name</div><div style="font-weight: 500;">${person.name}</div></div>
+                        <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Relationship</div><div style="font-weight: 500;">${person.relationship}</div></div>
+                        ${person.dob ? `<div><div style="font-size: 0.7rem; color: var(--text-secondary);">Date of Birth</div><div style="font-weight: 500;">${formatDate(person.dob)}</div></div>` : ''}
+                        ${person.email ? `<div><div style="font-size: 0.7rem; color: var(--text-secondary);">Email</div><div style="font-weight: 500;">${person.email}</div></div>` : ''}
+                        <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Connected To</div><div style="font-weight: 500;">${app.name} (${app.id})</div></div>
+                        <div><div style="font-size: 0.7rem; color: var(--text-secondary);">Form Status</div><div><span class="status-badge ${person.formStatus}">${person.formStatus}</span></div></div>
+                    </div>
+                </div>
+
+                ${person.qualifications ? `
+                    <div class="detail-section">
+                        <div class="detail-section-title">Qualifications</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: var(--space-xs);">
+                            ${person.qualifications.map(q => `<span class="status-badge info">${q}</span>`).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${person.employmentHistory ? `
+                    <div class="detail-section">
+                        <div class="detail-section-title">Employment History</div>
+                        ${person.employmentHistory.map(emp => `
+                            <div style="padding: var(--space-sm); background: var(--bg-subtle); border-radius: var(--radius-sm); margin-bottom: var(--space-xs);">
+                                <div style="font-weight: 600;">${emp.employer}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">${emp.role} | ${emp.from} - ${emp.to || 'Present'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+
+                <div class="detail-section">
+                    <div class="detail-section-title">Suitability Checks</div>
+                    <div class="compliance-grid">
+                        ${renderComplianceItem('DBS Enhanced', person.checks.dbs || { status: 'not-started' })}
+                        ${renderComplianceItem('LA Check', person.checks.la_check || { status: 'not-started' })}
+                        ${person.checks.ref_1 ? renderComplianceItem('Reference', person.checks.ref_1) : ''}
+                    </div>
+                </div>
+
+                ${person.declaration ? `
+                    <div class="detail-section">
+                        <div class="detail-section-title">Declaration</div>
+                        <div style="padding: var(--space-md); background: ${person.declaration.signed ? '#d1e7dd' : '#fff3cd'}; border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; color: ${person.declaration.signed ? '#0f5132' : '#664d03'};">
+                                ${person.declaration.signed ? '✓ Declaration Signed' : '○ Awaiting Declaration'}
+                            </div>
+                            ${person.declaration.date ? `<div style="font-size: 0.85rem;">Signed on ${formatDate(person.declaration.date)}</div>` : ''}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-lg);">
+                    <button class="btn btn-secondary">View Full Form</button>
+                    <button class="btn btn-outline">Send Reminder</button>
+                </div>
+            `;
+
+            document.getElementById('personModal').classList.add('open');
+        }
+
+        // ==========================================
+        // MODAL FUNCTIONS
+        // ==========================================
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('open');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('open');
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+
+        async function init() {
+            await loadApplications();
+            if (applications.length === 0) {
+                applications = _hardcodedApplications; // fallback if API unavailable
+            }
+            renderPipeline();
+            renderComplianceTable();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        if (document.readyState !== 'loading') init();
+    </script>
+</body>
+</html>

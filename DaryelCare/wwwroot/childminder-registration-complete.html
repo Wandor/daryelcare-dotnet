@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadyKids – Childminder Registration Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           DESIGN SYSTEM: ReadyKids Professional Registration
+           ═══════════════════════════════════════════════════════════════ */
+        
+        :root {
+            --rk-primary: #0C7C59;
+            --rk-primary-dark: #095C43;
+            --rk-primary-light: #E8F5F0;
+            --rk-primary-glow: rgba(12, 124, 89, 0.12);
+            --rk-accent: #1B9AAA;
+            --rk-accent-light: #E6F5F7;
+            --rk-success: #059669;
+            --rk-success-bg: #D1FAE5;
+            --rk-warning: #D97706;
+            --rk-warning-bg: #FEF3C7;
+            --rk-error: #DC2626;
+            --rk-error-bg: #FEE2E2;
+            --rk-info: #2563EB;
+            --rk-info-bg: #DBEAFE;
+            --rk-black: #0F172A;
+            --rk-gray-900: #1E293B;
+            --rk-gray-800: #334155;
+            --rk-gray-700: #475569;
+            --rk-gray-600: #64748B;
+            --rk-gray-500: #94A3B8;
+            --rk-gray-400: #CBD5E1;
+            --rk-gray-300: #E2E8F0;
+            --rk-gray-200: #F1F5F9;
+            --rk-gray-100: #F8FAFC;
+            --rk-white: #FFFFFF;
+            --rk-focus: #FACC15;
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+            --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+            --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.12);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--rk-gray-800);
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #E8F5F0 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--rk-white);
+            border-bottom: 1px solid var(--rk-gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; gap: var(--space-3); }
+        .logo-mark {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--rk-primary) 0%, var(--rk-primary-dark) 100%);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(12, 124, 89, 0.25);
+        }
+        .logo-text {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--rk-primary);
+        }
+        .logo-text span { color: var(--rk-gray-600); font-weight: 400; font-size: 0.875rem; display: block; }
+        .exit-btn {
+            padding: var(--space-2) var(--space-4);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--rk-gray-700);
+            background: var(--rk-white);
+            border: 1px solid var(--rk-gray-300);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .exit-btn:hover { background: var(--rk-gray-100); }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-8) var(--space-6);
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: var(--space-8);
+        }
+        @media (max-width: 1024px) {
+            .main-container { grid-template-columns: 1fr; padding: var(--space-4); }
+        }
+
+        /* Sidebar */
+        .sidebar { position: sticky; top: 100px; height: fit-content; }
+        @media (max-width: 1024px) { .sidebar { position: relative; top: 0; } }
+        .progress-card {
+            background: var(--rk-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-6);
+        }
+        .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-4); }
+        .progress-title { font-weight: 600; color: var(--rk-gray-800); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .progress-percent { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--rk-primary); }
+        .progress-bar-container { height: 8px; background: var(--rk-gray-200); border-radius: 4px; overflow: hidden; margin-bottom: var(--space-4); }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--rk-primary) 0%, var(--rk-accent) 100%); border-radius: 4px; width: 0%; transition: width 0.4s ease-out; }
+        .progress-steps { font-size: 0.875rem; color: var(--rk-gray-600); }
+
+        .section-nav { background: var(--rk-white); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow-md); }
+        .nav-item {
+            display: flex; align-items: center; gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-1);
+            border: 2px solid transparent;
+        }
+        .nav-item:hover { background: var(--rk-gray-100); }
+        .nav-item.active { background: var(--rk-primary-light); border-color: var(--rk-primary); }
+        .nav-item.completed { background: var(--rk-success-bg); }
+        .nav-item.completed .nav-number { background: var(--rk-success); }
+        .nav-number {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--rk-gray-300); color: var(--rk-white);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 600; flex-shrink: 0;
+        }
+        .nav-item.active .nav-number { background: var(--rk-primary); box-shadow: 0 2px 8px rgba(12, 124, 89, 0.3); }
+        .nav-text { font-size: 0.875rem; font-weight: 500; color: var(--rk-gray-700); }
+        .nav-item.active .nav-text { color: var(--rk-primary-dark); font-weight: 600; }
+
+        /* Form Container */
+        .form-container { background: var(--rk-white); border-radius: 20px; box-shadow: var(--shadow-lg); overflow: hidden; }
+        .form-header {
+            background: linear-gradient(135deg, var(--rk-primary) 0%, var(--rk-primary-dark) 100%);
+            color: var(--rk-white);
+            padding: var(--space-8) var(--space-10);
+            position: relative;
+        }
+        .form-header h1 { font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: var(--space-2); }
+        .form-header p { opacity: 0.9; font-size: 1rem; }
+        .form-body { padding: var(--space-10); }
+        @media (max-width: 768px) {
+            .form-header { padding: var(--space-6); }
+            .form-header h1 { font-size: 1.5rem; }
+            .form-body { padding: var(--space-5); }
+        }
+
+        /* Form Sections */
+        .form-section { display: none; animation: fadeIn 0.25s ease-out; }
+        .form-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; color: var(--rk-gray-900); margin-bottom: var(--space-2); }
+        .section-description { color: var(--rk-gray-600); font-size: 1rem; margin-bottom: var(--space-8); max-width: 600px; line-height: 1.7; }
+        .subsection { margin-bottom: var(--space-10); padding-bottom: var(--space-8); border-bottom: 1px solid var(--rk-gray-200); }
+        .subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .subsection-title { font-size: 1.125rem; font-weight: 600; color: var(--rk-gray-800); margin-bottom: var(--space-5); display: flex; align-items: center; gap: var(--space-3); }
+        .subsection-title .icon { width: 24px; height: 24px; color: var(--rk-primary); }
+
+        /* Form Fields */
+        .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-5); }
+        .field-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .field-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 768px) { .field-grid, .field-grid-2, .field-grid-3 { grid-template-columns: 1fr; } }
+        .field { margin-bottom: var(--space-5); }
+        .field.full-width { grid-column: 1 / -1; }
+        .field-label { display: block; font-size: 0.9375rem; font-weight: 600; color: var(--rk-gray-800); margin-bottom: var(--space-2); }
+        .field-label .required { color: var(--rk-error); margin-left: 2px; }
+        .field-hint { display: block; font-size: 0.875rem; color: var(--rk-gray-600); margin-bottom: var(--space-3); line-height: 1.5; }
+        .input, .select, .textarea {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--rk-gray-800);
+            background: var(--rk-white);
+            border: 2px solid var(--rk-gray-300);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+        .input:hover, .select:hover, .textarea:hover { border-color: var(--rk-gray-400); }
+        .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--rk-primary); box-shadow: 0 0 0 4px var(--rk-primary-glow); }
+        .input::placeholder { color: var(--rk-gray-500); }
+        .input.error, .select.error, .textarea.error { border-color: var(--rk-error); background: var(--rk-error-bg); }
+        .input-sm { max-width: 180px; }
+        .input-md { max-width: 280px; }
+        .textarea { min-height: 100px; resize: vertical; }
+        .select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 44px;
+        }
+
+        /* Radio & Checkbox */
+        .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: var(--space-3); }
+        .radio-group.horizontal, .checkbox-group.horizontal { flex-direction: row; flex-wrap: wrap; gap: var(--space-4); }
+        .radio-item, .checkbox-item {
+            display: flex; align-items: flex-start; gap: var(--space-3);
+            padding: var(--space-4);
+            background: var(--rk-gray-100);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        .radio-item:hover, .checkbox-item:hover { background: var(--rk-gray-200); }
+        .radio-item.selected, .checkbox-item.selected { background: var(--rk-primary-light); border-color: var(--rk-primary); }
+        .radio-item.error, .checkbox-item.error { border-color: var(--rk-error); background: var(--rk-error-bg); }
+        .radio-item input, .checkbox-item input { position: absolute; opacity: 0; pointer-events: none; }
+        .radio-indicator, .checkbox-indicator {
+            width: 22px; height: 22px; min-width: 22px;
+            border: 2px solid var(--rk-gray-400);
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .radio-indicator { border-radius: 50%; }
+        .checkbox-indicator { border-radius: var(--radius-sm); }
+        .radio-item.selected .radio-indicator, .checkbox-item.selected .checkbox-indicator { border-color: var(--rk-primary); background: var(--rk-primary); }
+        .radio-indicator::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--rk-white); opacity: 0; transform: scale(0); transition: all var(--transition-fast); }
+        .radio-item.selected .radio-indicator::after { opacity: 1; transform: scale(1); }
+        .checkbox-indicator svg { width: 14px; height: 14px; color: var(--rk-white); opacity: 0; transform: scale(0); transition: all var(--transition-fast); }
+        .checkbox-item.selected .checkbox-indicator svg { opacity: 1; transform: scale(1); }
+        .option-content { flex: 1; }
+        .option-label { font-weight: 500; color: var(--rk-gray-800); }
+        .option-description { font-size: 0.875rem; color: var(--rk-gray-600); margin-top: var(--space-1); }
+
+        /* Info Boxes */
+        .info-box { padding: var(--space-5); border-radius: var(--radius-md); margin-bottom: var(--space-6); display: flex; gap: var(--space-4); }
+        .info-box.info { background: var(--rk-info-bg); border-left: 4px solid var(--rk-info); }
+        .info-box.warning { background: var(--rk-warning-bg); border-left: 4px solid var(--rk-warning); }
+        .info-box.success { background: var(--rk-success-bg); border-left: 4px solid var(--rk-success); }
+        .info-box.error { background: var(--rk-error-bg); border-left: 4px solid var(--rk-error); }
+        .info-box .icon { flex-shrink: 0; width: 24px; height: 24px; }
+        .info-box.info .icon { color: var(--rk-info); }
+        .info-box.warning .icon { color: var(--rk-warning); }
+        .info-box.success .icon { color: var(--rk-success); }
+        .info-box.error .icon { color: var(--rk-error); }
+        .info-box-content h4 { font-size: 0.9375rem; font-weight: 600; color: var(--rk-gray-800); margin-bottom: var(--space-1); }
+        .info-box-content p { font-size: 0.9375rem; color: var(--rk-gray-700); line-height: 1.6; }
+
+        /* Repeating Blocks */
+        .repeating-block {
+            background: var(--rk-gray-100);
+            border: 1px solid var(--rk-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-4);
+        }
+        .repeating-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-5); padding-bottom: var(--space-4); border-bottom: 1px solid var(--rk-gray-300); }
+        .repeating-block-title { font-weight: 600; color: var(--rk-gray-800); }
+        .remove-btn {
+            color: var(--rk-error); font-size: 0.875rem; font-weight: 500; cursor: pointer;
+            display: flex; align-items: center; gap: var(--space-1);
+            padding: var(--space-2); border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+            background: none; border: none;
+        }
+        .remove-btn:hover { background: var(--rk-error-bg); }
+        .add-btn {
+            display: inline-flex; align-items: center; gap: var(--space-2);
+            padding: var(--space-3) var(--space-5);
+            font-size: 0.9375rem; font-weight: 500;
+            color: var(--rk-primary);
+            background: var(--rk-white);
+            border: 2px dashed var(--rk-primary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .add-btn:hover { background: var(--rk-primary-light); border-style: solid; }
+
+        /* Address Timeline Status */
+        .timeline-status {
+            background: var(--rk-white);
+            border: 2px solid var(--rk-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-6);
+        }
+        .timeline-status.complete { background: var(--rk-success-bg); border-color: var(--rk-success); }
+        .timeline-status.incomplete { background: var(--rk-warning-bg); border-color: var(--rk-warning); }
+        .timeline-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+        .timeline-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .timeline-status.complete .timeline-icon { background: var(--rk-success); color: var(--rk-white); }
+        .timeline-status.incomplete .timeline-icon { background: var(--rk-warning); color: var(--rk-white); }
+        .timeline-title { font-weight: 600; color: var(--rk-gray-800); }
+        .timeline-text { font-size: 0.875rem; color: var(--rk-gray-700); }
+        .timeline-text ul { margin: var(--space-2) 0 0 var(--space-5); }
+        .timeline-text li { margin-bottom: var(--space-1); }
+
+        /* Capacity Calculator */
+        .capacity-calculator {
+            background: linear-gradient(135deg, var(--rk-primary-light) 0%, var(--rk-accent-light) 100%);
+            border: 2px solid var(--rk-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+        }
+        .capacity-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); }
+        .capacity-icon { width: 40px; height: 40px; background: var(--rk-primary); color: var(--rk-white); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+        .capacity-title { font-size: 1.125rem; font-weight: 600; color: var(--rk-gray-800); }
+        .capacity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--space-4); }
+        .capacity-card { background: var(--rk-white); border-radius: var(--radius-md); padding: var(--space-4); text-align: center; box-shadow: var(--shadow-sm); }
+        .capacity-number { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--rk-primary); line-height: 1; margin-bottom: var(--space-1); }
+        .capacity-label { font-size: 0.8125rem; color: var(--rk-gray-600); line-height: 1.3; }
+
+        /* Consent Items (for LA consent) */
+        .consent-banner {
+            background: linear-gradient(135deg, var(--rk-accent) 0%, var(--rk-primary) 100%);
+            color: var(--rk-white);
+            padding: var(--space-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-8);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-5);
+        }
+        .consent-banner-icon { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .consent-banner h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: var(--space-2); }
+        .consent-banner p { opacity: 0.95; font-size: 0.9375rem; line-height: 1.6; }
+        .consent-item {
+            background: var(--rk-white);
+            border: 2px solid var(--rk-gray-200);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            margin-bottom: var(--space-4);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            gap: var(--space-4);
+        }
+        .consent-item:hover { border-color: var(--rk-gray-300); background: var(--rk-gray-50); }
+        .consent-item.checked { background: var(--rk-primary-light); border-color: var(--rk-primary); }
+        .consent-item.error { border-color: var(--rk-error); background: var(--rk-error-bg); }
+        .consent-item input { position: absolute; opacity: 0; }
+        .consent-checkbox {
+            width: 24px; height: 24px; min-width: 24px;
+            border: 2px solid var(--rk-gray-400);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition-fast);
+            margin-top: 2px;
+        }
+        .consent-item.checked .consent-checkbox { background: var(--rk-primary); border-color: var(--rk-primary); }
+        .consent-checkbox svg { width: 14px; height: 14px; color: var(--rk-white); opacity: 0; transform: scale(0); transition: all var(--transition-fast); }
+        .consent-item.checked .consent-checkbox svg { opacity: 1; transform: scale(1); }
+        .consent-number { font-weight: 700; color: var(--rk-primary); margin-right: var(--space-2); }
+        .consent-text { color: var(--rk-gray-700); line-height: 1.6; flex: 1; font-size: 0.9375rem; }
+        .consent-text strong { color: var(--rk-gray-800); }
+        .consent-text ul { margin: var(--space-3) 0 0 var(--space-5); color: var(--rk-gray-600); }
+        .consent-text ul li { margin-bottom: var(--space-2); }
+
+        /* Signature Section */
+        .signature-section { background: linear-gradient(180deg, var(--rk-gray-50) 0%, var(--rk-white) 100%); border: 2px solid var(--rk-gray-200); border-radius: var(--radius-lg); padding: var(--space-6); margin-top: var(--space-8); }
+        .signature-title { font-size: 1.125rem; font-weight: 600; color: var(--rk-gray-800); margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3); }
+        .signature-declaration { background: var(--rk-warning-bg); border: 1px solid var(--rk-warning); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-5); font-size: 0.9375rem; color: var(--rk-gray-700); font-style: italic; line-height: 1.6; }
+        .signature-grid { display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: var(--space-5); }
+        @media (max-width: 768px) { .signature-grid { grid-template-columns: 1fr; } }
+        .signature-input { font-family: 'Brush Script MT', 'Segoe Script', cursive; font-size: 1.75rem; color: var(--rk-gray-900); }
+
+        /* Navigation Buttons */
+        .form-navigation { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-10); padding-top: var(--space-8); border-top: 1px solid var(--rk-gray-200); }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+            padding: var(--space-4) var(--space-6);
+            font-family: inherit; font-size: 1rem; font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            border: none;
+        }
+        .btn:focus { outline: none; box-shadow: 0 0 0 3px var(--rk-focus); }
+        .btn-primary { background: linear-gradient(135deg, var(--rk-primary) 0%, var(--rk-primary-dark) 100%); color: var(--rk-white); box-shadow: 0 4px 12px rgba(12, 124, 89, 0.25); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(12, 124, 89, 0.35); }
+        .btn-secondary { background: var(--rk-white); color: var(--rk-gray-700); border: 2px solid var(--rk-gray-300); }
+        .btn-secondary:hover { background: var(--rk-gray-100); border-color: var(--rk-gray-400); }
+        .btn-lg { padding: var(--space-4) var(--space-8); font-size: 1.0625rem; }
+        .btn svg { width: 20px; height: 20px; }
+
+        /* Error Summary */
+        .error-summary { background: var(--rk-error-bg); border: 2px solid var(--rk-error); border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-8); display: none; }
+        .error-summary.active { display: block; animation: shake 0.4s ease-out; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); } 20%, 40%, 60%, 80% { transform: translateX(4px); } }
+        .error-summary-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+        .error-summary-header svg { width: 24px; height: 24px; color: var(--rk-error); }
+        .error-summary h3 { font-size: 1.125rem; font-weight: 600; color: var(--rk-error); }
+        .error-summary p { color: var(--rk-gray-700); }
+
+        /* Autocomplete Dropdown */
+        .autocomplete-container { position: relative; }
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--rk-white);
+            border: 2px solid var(--rk-gray-300);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+        .autocomplete-dropdown.active { display: block; }
+        .autocomplete-item { padding: var(--space-3) var(--space-4); cursor: pointer; transition: background var(--transition-fast); }
+        .autocomplete-item:hover { background: var(--rk-primary-light); }
+
+        /* Training Sections */
+        .training-section { margin-bottom: var(--space-6); padding: var(--space-5); background: var(--rk-gray-50); border-radius: var(--radius-lg); border: 1px solid var(--rk-gray-200); }
+        .training-section.hidden { display: none; }
+        .training-details { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--rk-gray-200); }
+        .training-details.hidden { display: none; }
+
+        /* Utilities */
+        .hidden { display: none !important; }
+        .mt-4 { margin-top: var(--space-4); }
+        .mt-6 { margin-top: var(--space-6); }
+        .mb-4 { margin-bottom: var(--space-4); }
+        .space-y-4 > * + * { margin-top: var(--space-4); }
+        .space-y-6 > * + * { margin-top: var(--space-6); }
+
+        /* Mobile Nav */
+        @media (max-width: 1024px) {
+            .section-nav { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: var(--space-2); padding: var(--space-3); -webkit-overflow-scrolling: touch; }
+            .nav-item { flex-shrink: 0; padding: var(--space-2) var(--space-3); margin-bottom: 0; }
+            .nav-text { display: none; }
+            .nav-number { width: 36px; height: 36px; font-size: 0.875rem; }
+        }
+
+        /* Footer */
+        .footer { background: var(--rk-gray-900); color: var(--rk-gray-400); padding: var(--space-8) var(--space-6); margin-top: 4rem; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4); }
+        .footer-text { font-size: 0.875rem; }
+        .footer-links { display: flex; gap: var(--space-6); }
+        .footer-links a { color: var(--rk-gray-400); text-decoration: none; font-size: 0.875rem; }
+        .footer-links a:hover { color: var(--rk-white); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-mark">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    ReadyKids
+                    <span>Childminder Registration</span>
+                </div>
+            </div>
+            <button class="exit-btn">Save & Exit</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span class="progress-title">Progress</span>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-steps" id="progressSteps">Section 1 of 9</div>
+            </div>
+
+            <nav class="section-nav" id="sectionNav">
+                <div class="nav-item active" data-section="0"><div class="nav-number">1</div><span class="nav-text">Personal Details</span></div>
+                <div class="nav-item" data-section="1"><div class="nav-number">2</div><span class="nav-text">Address History</span></div>
+                <div class="nav-item" data-section="2"><div class="nav-number">3</div><span class="nav-text">Premises</span></div>
+                <div class="nav-item" data-section="3"><div class="nav-number">4</div><span class="nav-text">Your Service</span></div>
+                <div class="nav-item" data-section="4"><div class="nav-number">5</div><span class="nav-text">Training</span></div>
+                <div class="nav-item" data-section="5"><div class="nav-number">6</div><span class="nav-text">Employment</span></div>
+                <div class="nav-item" data-section="6"><div class="nav-number">7</div><span class="nav-text">Household</span></div>
+                <div class="nav-item" data-section="7"><div class="nav-number">8</div><span class="nav-text">Suitability</span></div>
+                <div class="nav-item" data-section="8"><div class="nav-number">9</div><span class="nav-text">Declaration</span></div>
+            </nav>
+        </aside>
+
+        <!-- Form Container -->
+        <main class="form-container">
+            <div class="form-header">
+                <h1>Apply to register as a childminder</h1>
+                <p>Complete this application to register with ReadyKids Childminder Agency.</p>
+            </div>
+
+            <div class="form-body">
+                <!-- Error Summary -->
+                <div class="error-summary" id="errorSummary" role="alert" tabindex="-1">
+                    <div class="error-summary-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <h3>There is a problem</h3>
+                    </div>
+                    <p id="errorMessage">Please correct the errors below to continue.</p>
+                </div>
+
+                <form id="applicationForm" novalidate>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 1: PERSONAL DETAILS
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section active" id="section-0">
+                        <h2 class="section-title">Personal Details</h2>
+                        <p class="section-description">We need your personal information to verify your identity and process your registration.</p>
+
+                        <div class="field-grid">
+                            <div class="field">
+                                <label class="field-label" for="title">Title <span class="required">*</span></label>
+                                <select id="title" name="title" class="select" required>
+                                    <option value="">Select title</option>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Ms">Ms</option>
+                                    <option value="Mx">Mx</option>
+                                    <option value="Dr">Dr</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="firstName">First name(s) <span class="required">*</span></label>
+                                <input type="text" id="firstName" name="firstName" class="input" required>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="middleNames">Middle name(s)</label>
+                                <input type="text" id="middleNames" name="middleNames" class="input">
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="lastName">Last name <span class="required">*</span></label>
+                                <input type="text" id="lastName" name="lastName" class="input" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Gender <span class="required">*</span></label>
+                            <div class="radio-group horizontal">
+                                <label class="radio-item"><input type="radio" name="gender" value="Male" required><span class="radio-indicator"></span><span class="option-label">Male</span></label>
+                                <label class="radio-item"><input type="radio" name="gender" value="Female" required><span class="radio-indicator"></span><span class="option-label">Female</span></label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Have you ever been known by any other names? <span class="required">*</span></label>
+                            <span class="field-hint">Including maiden names, previous married names, or name changes</span>
+                            <div class="radio-group horizontal">
+                                <label class="radio-item"><input type="radio" name="otherNames" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                <label class="radio-item"><input type="radio" name="otherNames" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                            </div>
+                        </div>
+
+                        <div id="nameHistoryContainer" class="hidden">
+                            <div id="previousNamesList" class="space-y-4"></div>
+                            <button type="button" class="add-btn" id="addPreviousName">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Add another name
+                            </button>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="dob">Date of birth <span class="required">*</span></label>
+                            <span class="field-hint">You must be 18 or over to register as a childminder</span>
+                            <input type="date" id="dob" name="dob" class="input input-md" required>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="rightToWork">Do you have the right to work in the UK? <span class="required">*</span></label>
+                            <select id="rightToWork" name="rightToWork" class="select" required>
+                                <option value="">Select your status</option>
+                                <option value="Yes, I am a British Citizen">Yes, I am a British Citizen</option>
+                                <option value="Yes, I have Settled/Pre-settled Status">Yes, I have Settled/Pre-settled Status</option>
+                                <option value="Yes, I have a relevant Visa">Yes, I have a relevant Visa</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <div id="rightToWorkInfo" class="info-box warning hidden">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <div class="info-box-content">
+                                <h4>Right to Work Required</h4>
+                                <p>We will need to verify your right to work status. If you do not have the right to work in the UK, we cannot proceed with your application.</p>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Contact Details</h3>
+                            <div class="field-grid field-grid-2">
+                                <div class="field">
+                                    <label class="field-label" for="email">Email address <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" class="input" required placeholder="name@example.com">
+                                </div>
+                                <div class="field">
+                                    <label class="field-label" for="phone">Mobile number <span class="required">*</span></label>
+                                    <input type="tel" id="phone" name="phone" class="input" required placeholder="07123 456789">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="niNumber">National Insurance number <span class="required">*</span></label>
+                            <span class="field-hint">It's on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ 12 34 56 C'</span>
+                            <input type="text" id="niNumber" name="niNumber" class="input input-md" required placeholder="QQ 12 34 56 C" style="text-transform: uppercase;">
+                        </div>
+
+                        <div class="form-navigation">
+                            <div></div>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 2: ADDRESS HISTORY
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-1">
+                        <h2 class="section-title">Address History</h2>
+                        <p class="section-description">We need your complete address history for the past 5 years for background checks.</p>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Current Home Address</h3>
+
+                            <div class="field-grid field-grid-2">
+                                <div class="field full-width">
+                                    <label class="field-label" for="homeAddressLine1">Address line 1 <span class="required">*</span></label>
+                                    <input type="text" id="homeAddressLine1" name="homeAddressLine1" class="input" required>
+                                </div>
+                                <div class="field full-width">
+                                    <label class="field-label" for="homeAddressLine2">Address line 2</label>
+                                    <input type="text" id="homeAddressLine2" name="homeAddressLine2" class="input">
+                                </div>
+                                <div class="field">
+                                    <label class="field-label" for="homeTown">Town or city <span class="required">*</span></label>
+                                    <input type="text" id="homeTown" name="homeTown" class="input" required>
+                                </div>
+                                <div class="field">
+                                    <label class="field-label" for="homePostcode">Postcode <span class="required">*</span></label>
+                                    <input type="text" id="homePostcode" name="homePostcode" class="input input-sm" required style="text-transform: uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="homeMoveIn">When did you move into this address? <span class="required">*</span></label>
+                                <input type="date" id="homeMoveIn" name="homeMoveIn" class="input input-md" required>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">5-Year Address History</h3>
+                            <p style="margin-bottom: var(--space-4); color: var(--rk-gray-600);">You must provide a complete history of all addresses where you have lived for the past 5 years.</p>
+
+                            <div class="timeline-status incomplete" id="addressTimelineStatus">
+                                <div class="timeline-header">
+                                    <div class="timeline-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    </div>
+                                    <span class="timeline-title" id="timelineTitle">Address history status</span>
+                                </div>
+                                <div class="timeline-text" id="timelineText">Enter your current address move-in date to calculate coverage.</div>
+                            </div>
+
+                            <div id="addressHistoryContainer" class="space-y-4"></div>
+
+                            <button type="button" class="add-btn" id="addAddressHistory">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Add previous address
+                            </button>
+
+                            <div id="addressGapsSection" class="hidden mt-6">
+                                <div class="field">
+                                    <label class="field-label" for="gapDetails">Explain any gaps in your address history <span class="required">*</span></label>
+                                    <span class="field-hint">Please explain periods of travel, temporary accommodation, or other circumstances.</span>
+                                    <textarea id="gapDetails" name="gapDetails" class="textarea" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Overseas & Military History</h3>
+
+                            <div class="field">
+                                <label class="field-label">Have you lived outside the UK in the last 5 years? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="livedOutsideUK" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="livedOutsideUK" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+
+                            <div id="outsideUKContainer" class="info-box info hidden">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <div class="info-box-content">
+                                    <p>If you have lived outside the UK, you must obtain a police check or 'Certificate of Good Conduct' from the relevant countries.</p>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label">Have you lived or worked on a British military base abroad in the last 5 years? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="militaryBase" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="militaryBase" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+
+                            <div id="militaryBaseContainer" class="info-box info hidden">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <div class="info-box-content">
+                                    <p>We will arrange Ministry of Defence (MoD) checks on your behalf. You may need to complete additional forms.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 3: CHILDMINDING PREMISES
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-2">
+                        <h2 class="section-title">Your Childminding Premises</h2>
+                        <p class="section-description">Tell us about the location where you will be providing childcare.</p>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Local Authority</h3>
+
+                            <div class="field autocomplete-container">
+                                <label class="field-label" for="authoritySearch">Local authority / council <span class="required">*</span></label>
+                                <span class="field-hint">This is the local authority where the childcare premises is located.</span>
+                                <input type="text" id="authoritySearch" class="input" placeholder="Start typing..." autocomplete="off" required>
+                                <input type="hidden" id="selectedAuthority" name="localAuthority">
+                                <div id="authorityDropdown" class="autocomplete-dropdown"></div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Premises Type</h3>
+
+                            <div class="field">
+                                <label class="field-label">What type of premises will you work from? <span class="required">*</span></label>
+                                <div class="radio-group">
+                                    <label class="radio-item selected"><input type="radio" name="premisesType" value="Domestic" required checked><span class="radio-indicator"></span><div class="option-content"><span class="option-label">Domestic (a home)</span><span class="option-description">You will provide childcare from a residential property</span></div></label>
+                                    <label class="radio-item"><input type="radio" name="premisesType" value="Non-domestic" required><span class="radio-indicator"></span><div class="option-content"><span class="option-label">Non-domestic</span><span class="option-description">e.g., community hall, school site, purpose-built facility</span></div></label>
+                                </div>
+                            </div>
+
+                            <div id="domesticPremisesSection" class="field">
+                                <label class="field-label">Will this be your own home address? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item selected"><input type="radio" name="sameAddress" value="Yes" required checked><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="sameAddress" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+
+                            <div id="childcareAddressContainer" class="hidden mt-6">
+                                <div class="info-box info mb-4">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    <div class="info-box-content"><p>Please provide the full address of the premises. If it is a domestic address that is not your own home, we will need to conduct suitability checks on everyone living there aged 16 or over.</p></div>
+                                </div>
+                                <div class="field-grid field-grid-2">
+                                    <div class="field full-width"><label class="field-label" for="childcareAddressLine1">Address line 1 <span class="required">*</span></label><input type="text" id="childcareAddressLine1" name="childcareAddressLine1" class="input"></div>
+                                    <div class="field full-width"><label class="field-label" for="childcareAddressLine2">Address line 2</label><input type="text" id="childcareAddressLine2" name="childcareAddressLine2" class="input"></div>
+                                    <div class="field"><label class="field-label" for="childcareTown">Town or city <span class="required">*</span></label><input type="text" id="childcareTown" name="childcareTown" class="input"></div>
+                                    <div class="field"><label class="field-label" for="childcarePostcode">Postcode <span class="required">*</span></label><input type="text" id="childcarePostcode" name="childcarePostcode" class="input input-sm" style="text-transform: uppercase;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Premises Details</h3>
+
+                            <div class="field">
+                                <label class="field-label">Do you have an outdoor space available for children? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="outdoorSpace" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="outdoorSpace" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label">Do you have any pets at the premises? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="pets" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="pets" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+
+                            <div id="petsDetails" class="field hidden">
+                                <label class="field-label" for="petsText">Please list the pets and describe arrangements to keep them separate from children <span class="required">*</span></label>
+                                <textarea id="petsText" name="petsText" class="textarea" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 4: YOUR SERVICE
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-3">
+                        <h2 class="section-title">Your Childminding Service</h2>
+                        <p class="section-description">Select which age groups you wish to care for. This determines your Ofsted register(s) and training requirements.</p>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Age Groups</h3>
+
+                            <div class="info-box info">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <div class="info-box-content">
+                                    <h4>Understanding the Registers</h4>
+                                    <p><strong>Early Years Register (0-5):</strong> Most comprehensive requirements.<br>
+                                    <strong>Compulsory Childcare Register (5-7):</strong> For children 5-8 years.<br>
+                                    <strong>Voluntary Childcare Register (8+):</strong> For children 8 and over.</p>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label">Which age groups will you care for? <span class="required">*</span></label>
+                                <span class="field-hint">Select all that apply</span>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item"><input type="checkbox" name="ageGroups" value="0-5" id="ageGroups-0-5"><span class="checkbox-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><div class="option-content"><span class="option-label">0–5 years (Early Years Register)</span></div></label>
+                                    <label class="checkbox-item"><input type="checkbox" name="ageGroups" value="5-7" id="ageGroups-5-7"><span class="checkbox-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><div class="option-content"><span class="option-label">5–7 years (Compulsory Childcare Register)</span></div></label>
+                                    <label class="checkbox-item"><input type="checkbox" name="ageGroups" value="8+" id="ageGroups-8+"><span class="checkbox-indicator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><div class="option-content"><span class="option-label">8 years or older (Voluntary Childcare Register)</span></div></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Working Arrangements</h3>
+
+                            <div class="field">
+                                <label class="field-label">Will you work with any assistants or co-childminders? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="workWithOthers" value="Yes" id="workWithOthers-yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item selected"><input type="radio" name="workWithOthers" value="No" id="workWithOthers-no" required checked><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+
+                            <div id="assistantsNumberContainer" class="field hidden">
+                                <label class="field-label" for="numberOfAssistants">How many assistants/co-childminders? <span class="required">*</span></label>
+                                <input type="number" id="numberOfAssistants" name="numberOfAssistants" class="input input-sm" min="1" max="3">
+                            </div>
+
+                            <div class="capacity-calculator">
+                                <div class="capacity-header">
+                                    <div class="capacity-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                                    <span class="capacity-title">Your Maximum Child Capacity</span>
+                                </div>
+                                <div class="capacity-grid">
+                                    <div class="capacity-card"><div class="capacity-number" id="totalAdultsText">1</div><div class="capacity-label">Total Adults</div></div>
+                                    <div class="capacity-card"><div class="capacity-number" id="maxUnder5Text">3</div><div class="capacity-label">Max Under 5s</div></div>
+                                    <div class="capacity-card"><div class="capacity-number" id="maxUnder1Text">1</div><div class="capacity-label">Max Under 1s</div></div>
+                                    <div class="capacity-card"><div class="capacity-number" id="maxUnder8Text">6</div><div class="capacity-label">Max Under 8s</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 5: QUALIFICATIONS & TRAINING
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-4">
+                        <h2 class="section-title">Qualifications & Training</h2>
+                        <p class="section-description">You must have completed the required training before registration. We will verify certificates during your pre-registration visit.</p>
+
+                        <div id="firstAidSection" class="training-section hidden">
+                            <h3 id="firstAidHeading" style="font-weight: 600; margin-bottom: var(--space-3);">Paediatric First Aid (PFA)</h3>
+                            <div class="field">
+                                <label class="field-label" id="firstAidLegend">Have you completed a 12-hour Paediatric First Aid course? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="firstAidCompleted" value="Yes"><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="firstAidCompleted" value="No"><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div class="training-details hidden">
+                                <div class="field-grid field-grid-2">
+                                    <div class="field"><label class="field-label" for="firstAidOrg">Training organisation</label><input type="text" id="firstAidOrg" name="firstAidOrg" class="input"></div>
+                                    <div class="field"><label class="field-label" for="firstAidDate">Date completed</label><input type="date" id="firstAidDate" name="firstAidDate" class="input"></div>
+                                </div>
+                                <div id="firstAidWarning" class="info-box warning hidden mt-4">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    <div class="info-box-content"><p>Your certificate is over 3 years old. You must complete a new course before registration.</p></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="safeguardingSection" class="training-section hidden">
+                            <h3 style="font-weight: 600; margin-bottom: var(--space-3);">Safeguarding and Child Protection</h3>
+                            <div class="field">
+                                <label class="field-label">Have you completed safeguarding training? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="safeguardingCompleted" value="Yes"><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="safeguardingCompleted" value="No"><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div class="training-details hidden">
+                                <div class="field-grid field-grid-2">
+                                    <div class="field"><label class="field-label" for="safeguardingOrg">Training organisation</label><input type="text" id="safeguardingOrg" name="safeguardingOrg" class="input"></div>
+                                    <div class="field"><label class="field-label" for="safeguardingDate">Date completed</label><input type="date" id="safeguardingDate" name="safeguardingDate" class="input"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="eyfsSection" class="training-section hidden">
+                            <h3 style="font-weight: 600; margin-bottom: var(--space-3);">Childminding Practice / EYFS Training</h3>
+                            <div class="field">
+                                <label class="field-label">Have you completed a relevant childminding course? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="eyfsCompleted" value="Yes"><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="eyfsCompleted" value="No"><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div class="training-details hidden">
+                                <div class="field-grid">
+                                    <div class="field"><label class="field-label" for="eyfsOrg">Training organisation</label><input type="text" id="eyfsOrg" name="eyfsOrg" class="input"></div>
+                                    <div class="field"><label class="field-label" for="eyfsCourse">Course title</label><input type="text" id="eyfsCourse" name="eyfsCourse" class="input"></div>
+                                    <div class="field"><label class="field-label" for="eyfsDate">Date completed</label><input type="date" id="eyfsDate" name="eyfsDate" class="input"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="level2QualSection" class="training-section hidden">
+                            <h3 style="font-weight: 600; margin-bottom: var(--space-3);">Level 2 Qualification / Common Core Skills</h3>
+                            <div class="field">
+                                <label class="field-label">Do you have a minimum Level 2 qualification OR training in the common core skills? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="level2QualCompleted" value="Yes"><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="level2QualCompleted" value="No"><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div class="training-details hidden">
+                                <div class="field-grid field-grid-2">
+                                    <div class="field"><label class="field-label" for="level2QualOrg">Training organisation</label><input type="text" id="level2QualOrg" name="level2QualOrg" class="input"></div>
+                                    <div class="field"><label class="field-label" for="level2QualDate">Date completed</label><input type="date" id="level2QualDate" name="level2QualDate" class="input"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="training-section">
+                            <h3 style="font-weight: 600; margin-bottom: var(--space-3);">Food Hygiene (Recommended)</h3>
+                            <div class="field">
+                                <label class="field-label">Have you completed food hygiene training?</label>
+                                <span class="field-hint">This is recommended if you will be preparing food for children.</span>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="foodHygieneCompleted" value="Yes"><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="foodHygieneCompleted" value="No"><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div class="training-details hidden">
+                                <div class="field-grid field-grid-2">
+                                    <div class="field"><label class="field-label" for="foodHygieneOrg">Training organisation</label><input type="text" id="foodHygieneOrg" name="foodHygieneOrg" class="input"></div>
+                                    <div class="field"><label class="field-label" for="foodHygieneDate">Date completed</label><input type="date" id="foodHygieneDate" name="foodHygieneDate" class="input"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-box info" id="noAgeGroupsWarning">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            <div class="info-box-content"><p>Please select at least one age group in the previous section to see your required training.</p></div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTIONS 6-7: Employment & Household (Condensed for length)
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-5">
+                        <h2 class="section-title">Employment History & References</h2>
+                        <p class="section-description">Provide your employment history and two professional references.</p>
+
+                        <div id="employmentHistoryBlocks" class="space-y-4"></div>
+                        <button type="button" class="add-btn" id="addEmploymentHistory"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add employment</button>
+
+                        <div class="subsection mt-6">
+                            <h3 class="subsection-title">References</h3>
+                            <p style="margin-bottom: var(--space-4); color: var(--rk-gray-600);">Provide details for two referees. They must not be related to you.</p>
+                            <div id="referenceBlocks" class="space-y-6"></div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <section class="form-section" id="section-6">
+                        <h2 class="section-title">Household Members</h2>
+                        <p class="section-description">We need details of everyone living at the childcare premises.</p>
+
+                        <div id="adultsSection">
+                            <div class="field">
+                                <label class="field-label">Do any other people aged 16 or over live or work at the premises? <span class="required">*</span></label>
+                                <span class="field-hint">This includes partners, older children, lodgers, or cleaners present during childminding hours.</span>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="adultsInHome" value="Yes" id="adultsInHome-yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="adultsInHome" value="No" id="adultsInHome-no" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div id="adultsContainer" class="hidden mt-4">
+                                <div id="adultBlocks" class="space-y-4"></div>
+                                <button type="button" class="add-btn" id="addAdult"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add person</button>
+                            </div>
+                        </div>
+
+                        <div id="childrenSection" class="mt-6">
+                            <div class="field">
+                                <label class="field-label">Do any children under 16 live at the premises? <span class="required">*</span></label>
+                                <span class="field-hint">This includes your own children.</span>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="childrenInHome" value="Yes" id="childrenInHome-yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="childrenInHome" value="No" id="childrenInHome-no" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div id="childrenContainer" class="hidden mt-4">
+                                <div id="childBlocks" class="space-y-4"></div>
+                                <button type="button" class="add-btn" id="addChild"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add child</button>
+                            </div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 8: SUITABILITY & DBS
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-7">
+                        <h2 class="section-title">Suitability & Vetting</h2>
+                        <p class="section-description">Important declarations about your suitability to work with children.</p>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Health Declaration</h3>
+                            <div class="field">
+                                <label class="field-label">Do you have any medical conditions that may impact your ability to work as a childminder? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="healthCondition" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="healthCondition" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div id="healthConditionDetails" class="field hidden">
+                                <label class="field-label" for="healthConditionDetailsTextarea">Please provide details <span class="required">*</span></label>
+                                <textarea id="healthConditionDetailsTextarea" name="healthConditionDetails" class="textarea" rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Suitability Declaration</h3>
+
+                            <div class="field">
+                                <label class="field-label">Are you disqualified under the Childcare Act 2006? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="disqualified" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="disqualified" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div id="disqualifiedInfo" class="info-box error hidden">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <div class="info-box-content"><p>If you are disqualified, we cannot proceed with your application unless you have received a waiver from Ofsted.</p></div>
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label">Have you ever been involved with social services in connection with your own children? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="socialServices" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="socialServices" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div id="socialServicesDetails" class="field hidden">
+                                <label class="field-label" for="socialServicesInfo">Please provide details <span class="required">*</span></label>
+                                <textarea id="socialServicesInfo" name="socialServicesInfo" class="textarea" rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">DBS & Vetting</h3>
+                            <div class="field">
+                                <label class="field-label">Do you currently hold an Enhanced DBS certificate dated within the last 3 years? <span class="required">*</span></label>
+                                <div class="radio-group horizontal">
+                                    <label class="radio-item"><input type="radio" name="hasDBS" value="Yes" required><span class="radio-indicator"></span><span class="option-label">Yes</span></label>
+                                    <label class="radio-item"><input type="radio" name="hasDBS" value="No" required><span class="radio-indicator"></span><span class="option-label">No</span></label>
+                                </div>
+                            </div>
+                            <div id="noDBSInfo" class="info-box warning hidden">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                <div class="info-box-content"><p>You must obtain an Enhanced DBS check and subscribe to the Update Service before we can complete your registration.</p></div>
+                            </div>
+                            <div id="dbsFields" class="hidden space-y-4 mt-4">
+                                <div class="field"><label class="field-label" for="dbsNumber">DBS certificate number (12 digits) <span class="required">*</span></label><input type="text" id="dbsNumber" name="dbsNumber" class="input input-md" maxlength="12" pattern="\d{12}"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="button" class="btn btn-primary btn-lg next-btn">Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════════════════════════
+                         SECTION 9: LA CONSENT & FINAL DECLARATION
+                         ═══════════════════════════════════════════════════════════════ -->
+                    <section class="form-section" id="section-8">
+                        <h2 class="section-title">Local Authority Consent & Declaration</h2>
+                        <p class="section-description">As part of safeguarding requirements, we must check with local authorities where you have lived in the past 5 years.</p>
+
+                        <div class="consent-banner">
+                            <div class="consent-banner-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                            <div>
+                                <h3>Why is this consent needed?</h3>
+                                <p>ReadyKids is an Ofsted-registered childminder agency. We must carry out background checks with local authorities where you have lived to assess your suitability to work with children.</p>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 class="subsection-title">Your Consent</h3>
+                            <p style="margin-bottom: var(--space-5); color: var(--rk-gray-700);">By checking each box below, you confirm that you:</p>
+
+                            <label class="consent-item" id="consent1Container"><input type="checkbox" id="consent1" required><span class="consent-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="consent-text"><span class="consent-number">1.</span> <strong>Authorise ReadyKids</strong> to contact the children's services departments of any local authority area in which you have lived in the last 5 years.</span></label>
+
+                            <label class="consent-item" id="consent2Container"><input type="checkbox" id="consent2" required><span class="consent-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="consent-text"><span class="consent-number">2.</span> <strong>Authorise those local authorities</strong> to share with ReadyKids any relevant information about your suitability to work with children.</span></label>
+
+                            <label class="consent-item" id="consent3Container"><input type="checkbox" id="consent3" required><span class="consent-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="consent-text"><span class="consent-number">3.</span> <strong>Understand</strong> that ReadyKids will use this information only for assessing your suitability and meeting safeguarding duties.</span></label>
+
+                            <label class="consent-item" id="consent4Container"><input type="checkbox" id="consent4" required><span class="consent-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="consent-text"><span class="consent-number">4.</span> <strong>Understand</strong> that ReadyKids will handle all information in accordance with data protection law.</span></label>
+
+                            <label class="consent-item" id="consent5Container"><input type="checkbox" id="consent5" required><span class="consent-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="consent-text"><span class="consent-number">5.</span> <strong>Confirm</strong> that all information in this application is true and complete to the best of your knowledge.</span></label>
+                        </div>
+
+                        <div class="signature-section">
+                            <h3 class="signature-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> Declaration & Signature</h3>
+                            <div class="signature-declaration">I have read and understood the information above and I give my consent for ReadyKids and relevant local authority children's services departments to share information about me for the purposes described.</div>
+                            <div class="signature-grid">
+                                <div class="field"><label class="field-label" for="declarationSignature">Your signature <span class="required">*</span></label><span class="field-hint">Type your full name as your electronic signature</span><input type="text" id="declarationSignature" name="declarationSignature" class="input signature-input" required placeholder="Type your full name"></div>
+                                <div class="field"><label class="field-label" for="declarationPrintName">Full name (PRINT) <span class="required">*</span></label><input type="text" id="declarationPrintName" name="declarationPrintName" class="input" required style="text-transform: uppercase;" placeholder="FULL NAME IN CAPITALS"></div>
+                                <div class="field"><label class="field-label" for="declarationDate">Date <span class="required">*</span></label><input type="date" id="declarationDate" name="declarationDate" class="input" required></div>
+                            </div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+                            <button type="submit" class="btn btn-primary btn-lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Submit Application</button>
+                        </div>
+                    </section>
+
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p class="footer-text">© 2025 ReadyKids Childminder Agency. Ofsted URN 2012345.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ═══════════════════════════════════════════════════════════════
+        // STATE & DOM
+        // ═══════════════════════════════════════════════════════════════
+        let currentSection = 0;
+        const totalSections = 9;
+        const sections = document.querySelectorAll('.form-section');
+        const navItems = document.querySelectorAll('.nav-item');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        const progressSteps = document.getElementById('progressSteps');
+        const errorSummary = document.getElementById('errorSummary');
+        const errorMessage = document.getElementById('errorMessage');
+        const form = document.getElementById('applicationForm');
+
+        // ═══════════════════════════════════════════════════════════════
+        // LOCAL AUTHORITIES LIST
+        // ═══════════════════════════════════════════════════════════════
+        const authorities = [
+            "Barking and Dagenham", "Barnet", "Barnsley", "Bath and North East Somerset", "Bedford", "Bexley", "Birmingham", "Blackburn with Darwen", "Blackpool", "Bolton", "Bournemouth, Christchurch and Poole", "Bracknell Forest", "Bradford", "Brent", "Brighton and Hove", "Bristol", "Bromley", "Buckinghamshire", "Bury", "Calderdale", "Cambridgeshire", "Camden", "Central Bedfordshire", "Cheshire East", "Cheshire West and Chester", "City of London", "Cornwall", "Coventry", "Croydon", "Cumbria", "Darlington", "Derby", "Derbyshire", "Devon", "Doncaster", "Dorset", "Dudley", "Durham", "Ealing", "East Riding of Yorkshire", "East Sussex", "Enfield", "Essex", "Gateshead", "Gloucestershire", "Greenwich", "Hackney", "Halton", "Hammersmith and Fulham", "Hampshire", "Haringey", "Harrow", "Hartlepool", "Havering", "Herefordshire", "Hertfordshire", "Hillingdon", "Hounslow", "Isle of Wight", "Islington", "Kensington and Chelsea", "Kent", "Kingston upon Hull", "Kingston upon Thames", "Kirklees", "Knowsley", "Lambeth", "Lancashire", "Leeds", "Leicester", "Leicestershire", "Lewisham", "Lincolnshire", "Liverpool", "Luton", "Manchester", "Medway", "Merton", "Middlesbrough", "Milton Keynes", "Newcastle upon Tyne", "Newham", "Norfolk", "North East Lincolnshire", "North Lincolnshire", "North Somerset", "North Tyneside", "North Yorkshire", "Northamptonshire", "Northumberland", "Nottingham", "Nottinghamshire", "Oldham", "Oxfordshire", "Peterborough", "Plymouth", "Portsmouth", "Reading", "Redbridge", "Redcar and Cleveland", "Richmond upon Thames", "Rochdale", "Rotherham", "Rutland", "Salford", "Sandwell", "Sefton", "Sheffield", "Shropshire", "Slough", "Solihull", "Somerset", "South Gloucestershire", "South Tyneside", "Southampton", "Southend-on-Sea", "Southwark", "St Helens", "Staffordshire", "Stockport", "Stockton-on-Tees", "Stoke-on-Trent", "Suffolk", "Sunderland", "Surrey", "Sutton", "Swindon", "Tameside", "Telford and Wrekin", "Thurrock", "Torbay", "Tower Hamlets", "Trafford", "Wakefield", "Walsall", "Waltham Forest", "Wandsworth", "Warrington", "Warwickshire", "West Berkshire", "West Sussex", "Westminster", "Wigan", "Wiltshire", "Windsor and Maidenhead", "Wirral", "Wokingham", "Wolverhampton", "Worcestershire", "York"
+        ];
+
+        // ═══════════════════════════════════════════════════════════════
+        // NAVIGATION
+        // ═══════════════════════════════════════════════════════════════
+        function updateProgress() {
+            const percent = Math.round((currentSection / (totalSections - 1)) * 100);
+            progressBar.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressSteps.textContent = `Section ${currentSection + 1} of ${totalSections}`;
+        }
+
+        function showSection(index) {
+            if (index < 0 || index >= totalSections) return;
+
+            // Validate when going forward
+            if (index > currentSection) {
+                const validation = validateSection(currentSection);
+                if (!validation.isValid) {
+                    errorMessage.textContent = validation.message;
+                    errorSummary.classList.add('active');
+                    errorSummary.focus();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            errorSummary.classList.remove('active');
+            sections.forEach((s, i) => s.classList.toggle('active', i === index));
+            navItems.forEach((n, i) => {
+                n.classList.toggle('active', i === index);
+                if (i < index) n.classList.add('completed');
+            });
+            currentSection = index;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function validateSection(index) {
+            const section = sections[index];
+            let hasErrors = false;
+
+            // Clear previous error styles
+            section.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+
+            // Age validation for Section 0
+            if (index === 0) {
+                const dobInput = document.getElementById('dob');
+                if (dobInput && dobInput.value) {
+                    const birthDate = new Date(dobInput.value);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+                    if (age < 18) {
+                        dobInput.classList.add('error');
+                        return { isValid: false, message: 'You must be 18 or over to register as a childminder.' };
+                    }
+                }
+            }
+
+            // Check all required visible fields
+            const requiredFields = section.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                const isVisible = field.offsetParent !== null;
+                if (!isVisible) return;
+
+                let isInvalid = false;
+                if (field.type === 'radio') {
+                    const group = section.querySelectorAll(`input[name="${field.name}"]`);
+                    const checked = Array.from(group).some(r => r.checked);
+                    if (!checked) {
+                        isInvalid = true;
+                        group.forEach(r => r.closest('.radio-item')?.classList.add('error'));
+                    }
+                } else if (field.type === 'checkbox') {
+                    if (!field.checked) {
+                        isInvalid = true;
+                        field.closest('.checkbox-item, .consent-item')?.classList.add('error');
+                    }
+                } else {
+                    if (!field.value.trim()) {
+                        isInvalid = true;
+                        field.classList.add('error');
+                    }
+                }
+                if (isInvalid) hasErrors = true;
+            });
+
+            if (hasErrors) {
+                return { isValid: false, message: 'Please fill in all required fields (marked with *).' };
+            }
+            return { isValid: true, message: '' };
+        }
+
+        // Button handlers
+        document.querySelectorAll('.next-btn').forEach(btn => {
+            btn.addEventListener('click', () => showSection(currentSection + 1));
+        });
+        document.querySelectorAll('.prev-btn').forEach(btn => {
+            btn.addEventListener('click', () => showSection(currentSection - 1));
+        });
+        navItems.forEach((item, i) => {
+            item.addEventListener('click', () => {
+                if (i <= currentSection) showSection(i);
+            });
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // RADIO/CHECKBOX STYLING
+        // ═══════════════════════════════════════════════════════════════
+        document.querySelectorAll('.radio-item, .checkbox-item').forEach(item => {
+            const input = item.querySelector('input');
+            item.addEventListener('click', (e) => {
+                if (e.target === input) return;
+                if (input.type === 'radio') {
+                    document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
+                        r.closest('.radio-item')?.classList.remove('selected');
+                    });
+                    input.checked = true;
+                    item.classList.add('selected');
+                } else {
+                    input.checked = !input.checked;
+                    item.classList.toggle('selected', input.checked);
+                }
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            if (input.checked) item.classList.add('selected');
+        });
+
+        // Consent items
+        document.querySelectorAll('.consent-item').forEach(item => {
+            const cb = item.querySelector('input[type="checkbox"]');
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                cb.checked = !cb.checked;
+                item.classList.toggle('checked', cb.checked);
+                item.classList.remove('error');
+            });
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // CONDITIONAL TOGGLES
+        // ═══════════════════════════════════════════════════════════════
+        function setupToggle(radioName, containerId, showValue = 'Yes') {
+            const radios = document.querySelectorAll(`input[name="${radioName}"]`);
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const toggle = () => {
+                const checked = document.querySelector(`input[name="${radioName}"]:checked`);
+                const show = checked && checked.value === showValue;
+                container.classList.toggle('hidden', !show);
+            };
+            radios.forEach(r => r.addEventListener('change', toggle));
+            toggle();
+        }
+
+        setupToggle('otherNames', 'nameHistoryContainer', 'Yes');
+        setupToggle('livedOutsideUK', 'outsideUKContainer', 'Yes');
+        setupToggle('militaryBase', 'militaryBaseContainer', 'Yes');
+        setupToggle('pets', 'petsDetails', 'Yes');
+        setupToggle('workWithOthers', 'assistantsNumberContainer', 'Yes');
+        setupToggle('adultsInHome', 'adultsContainer', 'Yes');
+        setupToggle('childrenInHome', 'childrenContainer', 'Yes');
+        setupToggle('healthCondition', 'healthConditionDetails', 'Yes');
+        setupToggle('disqualified', 'disqualifiedInfo', 'Yes');
+        setupToggle('socialServices', 'socialServicesDetails', 'Yes');
+        setupToggle('hasDBS', 'dbsFields', 'Yes');
+        setupToggle('hasDBS', 'noDBSInfo', 'No');
+
+        // Right to work
+        document.getElementById('rightToWork')?.addEventListener('change', function() {
+            const info = document.getElementById('rightToWorkInfo');
+            info.classList.toggle('hidden', this.value !== 'No' && this.value !== 'Yes, I have a relevant Visa');
+        });
+
+        // Premises type
+        function handlePremisesChange() {
+            const type = document.querySelector('input[name="premisesType"]:checked')?.value;
+            const same = document.querySelector('input[name="sameAddress"]:checked')?.value;
+            const domesticSection = document.getElementById('domesticPremisesSection');
+            const addressContainer = document.getElementById('childcareAddressContainer');
+
+            if (type === 'Non-domestic') {
+                domesticSection.classList.add('hidden');
+                addressContainer.classList.remove('hidden');
+            } else {
+                domesticSection.classList.remove('hidden');
+                addressContainer.classList.toggle('hidden', same === 'Yes');
+            }
+        }
+        document.querySelectorAll('input[name="premisesType"], input[name="sameAddress"]').forEach(r => {
+            r.addEventListener('change', handlePremisesChange);
+        });
+        handlePremisesChange();
+
+        // ═══════════════════════════════════════════════════════════════
+        // ADDRESS HISTORY CALCULATION
+        // ═══════════════════════════════════════════════════════════════
+        const homeMoveInInput = document.getElementById('homeMoveIn');
+        const addressTimelineStatus = document.getElementById('addressTimelineStatus');
+        const timelineTitle = document.getElementById('timelineTitle');
+        const timelineText = document.getElementById('timelineText');
+        const addressGapsSection = document.getElementById('addressGapsSection');
+        const addAddressBtn = document.getElementById('addAddressHistory');
+
+        function formatDateMonthYear(date) {
+            if (!date || isNaN(date.getTime())) return 'Present';
+            return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+        }
+
+        function calculateAddressHistoryCoverage() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const fiveYearsAgo = new Date(today);
+            fiveYearsAgo.setFullYear(today.getFullYear() - 5);
+
+            let periods = [];
+
+            // Current address
+            if (homeMoveInInput.value) {
+                const moveIn = new Date(homeMoveInInput.value);
+                if (!isNaN(moveIn.getTime())) {
+                    periods.push({ start: moveIn, end: today });
+                }
+            }
+
+            // Previous addresses
+            document.querySelectorAll('#addressHistoryContainer .repeating-block').forEach(block => {
+                const moveIn = new Date(block.querySelector('input[name="historyMoveIn[]"]')?.value);
+                const moveOut = new Date(block.querySelector('input[name="historyMoveOut[]"]')?.value);
+                if (!isNaN(moveIn.getTime()) && !isNaN(moveOut.getTime())) {
+                    const inclusiveEnd = new Date(moveOut);
+                    inclusiveEnd.setDate(inclusiveEnd.getDate() + 1);
+                    periods.push({ start: moveIn, end: inclusiveEnd });
+                }
+            });
+
+            if (periods.length === 0) {
+                addressTimelineStatus.className = 'timeline-status incomplete';
+                timelineTitle.textContent = 'Address history incomplete';
+                timelineText.innerHTML = `Please provide your address history from <strong>${formatDateMonthYear(fiveYearsAgo)}</strong> to <strong>${formatDateMonthYear(today)}</strong>.`;
+                addressGapsSection.classList.add('hidden');
+                return;
+            }
+
+            // Sort and merge periods
+            periods.sort((a, b) => a.start - b.start);
+            const merged = [{ ...periods[0] }];
+            for (let i = 1; i < periods.length; i++) {
+                const last = merged[merged.length - 1];
+                if (periods[i].start <= last.end) {
+                    last.end = new Date(Math.max(last.end, periods[i].end));
+                } else {
+                    merged.push({ ...periods[i] });
+                }
+            }
+
+            // Find gaps
+            let gaps = [];
+            let pointer = new Date(fiveYearsAgo);
+            for (const period of merged) {
+                if (period.start > pointer) {
+                    gaps.push({ start: new Date(pointer), end: new Date(period.start) });
+                }
+                pointer = new Date(Math.max(pointer, period.end));
+            }
+            if (pointer < today) {
+                gaps.push({ start: pointer, end: today });
+            }
+
+            if (gaps.length === 0) {
+                addressTimelineStatus.className = 'timeline-status complete';
+                timelineTitle.textContent = '5-year address history complete';
+                timelineText.innerHTML = '<strong>Your address history covers the required 5-year period.</strong>';
+                addressGapsSection.classList.add('hidden');
+                addAddressBtn.style.display = 'none';
+            } else {
+                addressTimelineStatus.className = 'timeline-status incomplete';
+                timelineTitle.textContent = 'Address history has gaps';
+                let html = '<strong>Missing periods:</strong><ul>';
+                gaps.forEach(g => {
+                    const end = new Date(g.end);
+                    end.setDate(end.getDate() - 1);
+                    if (g.start <= end) {
+                        html += `<li>${formatDateMonthYear(g.start)} to ${formatDateMonthYear(end)}</li>`;
+                    }
+                });
+                html += '</ul>';
+                timelineText.innerHTML = html;
+                addressGapsSection.classList.remove('hidden');
+                addAddressBtn.style.display = 'inline-flex';
+            }
+        }
+
+        homeMoveInInput?.addEventListener('change', calculateAddressHistoryCoverage);
+
+        // ═══════════════════════════════════════════════════════════════
+        // CHILD CAPACITY CALCULATION
+        // ═══════════════════════════════════════════════════════════════
+        function updateChildCapacity() {
+            const withOthers = document.querySelector('input[name="workWithOthers"]:checked')?.value === 'Yes';
+            const numAssistants = withOthers ? (parseInt(document.getElementById('numberOfAssistants').value) || 0) : 0;
+            const total = 1 + Math.min(numAssistants, 3);
+
+            document.getElementById('totalAdultsText').textContent = total;
+            document.getElementById('maxUnder5Text').textContent = total * 3;
+            document.getElementById('maxUnder1Text').textContent = total * 1;
+            document.getElementById('maxUnder8Text').textContent = total * 6;
+        }
+
+        document.querySelectorAll('input[name="workWithOthers"]').forEach(r => {
+            r.addEventListener('change', updateChildCapacity);
+        });
+        document.getElementById('numberOfAssistants')?.addEventListener('input', updateChildCapacity);
+        updateChildCapacity();
+
+        // ═══════════════════════════════════════════════════════════════
+        // AGE GROUP TRAINING REQUIREMENTS
+        // ═══════════════════════════════════════════════════════════════
+        const ageGroupCheckboxes = document.querySelectorAll('input[name="ageGroups"]');
+        const firstAidSection = document.getElementById('firstAidSection');
+        const firstAidHeading = document.getElementById('firstAidHeading');
+        const firstAidLegend = document.getElementById('firstAidLegend');
+        const safeguardingSection = document.getElementById('safeguardingSection');
+        const eyfsSection = document.getElementById('eyfsSection');
+        const level2QualSection = document.getElementById('level2QualSection');
+        const noAgeGroupsWarning = document.getElementById('noAgeGroupsWarning');
+
+        function handleAgeGroupChange() {
+            const is0to5 = document.getElementById('ageGroups-0-5').checked;
+            const is5to7 = document.getElementById('ageGroups-5-7').checked;
+            const is8plus = document.getElementById('ageGroups-8+').checked;
+
+            const anySelected = is0to5 || is5to7 || is8plus;
+            noAgeGroupsWarning.classList.toggle('hidden', anySelected);
+
+            const showPFA = is0to5 || is5to7 || is8plus;
+            const showSafeguarding = is0to5 || is5to7;
+            const showEYFS = is5to7;
+            const showLevel2 = is8plus;
+
+            if (showPFA) {
+                if (is0to5) {
+                    firstAidHeading.textContent = 'Paediatric First Aid (PFA)';
+                    firstAidLegend.innerHTML = 'Have you completed a 12-hour Paediatric First Aid course? <span class="required">*</span>';
+                } else {
+                    firstAidHeading.textContent = 'Appropriate First Aid';
+                    firstAidLegend.innerHTML = 'Have you completed an appropriate first aid qualification? <span class="required">*</span>';
+                }
+            }
+
+            firstAidSection.classList.toggle('hidden', !showPFA);
+            safeguardingSection.classList.toggle('hidden', !showSafeguarding);
+            eyfsSection.classList.toggle('hidden', !showEYFS);
+            level2QualSection.classList.toggle('hidden', !showLevel2);
+
+            // Toggle required attributes
+            [firstAidSection, safeguardingSection, eyfsSection, level2QualSection].forEach(section => {
+                const isVisible = !section.classList.contains('hidden');
+                section.querySelectorAll('input[type="radio"]').forEach(input => {
+                    if (isVisible) input.setAttribute('required', '');
+                    else input.removeAttribute('required');
+                });
+            });
+        }
+
+        ageGroupCheckboxes.forEach(cb => cb.addEventListener('change', handleAgeGroupChange));
+        handleAgeGroupChange();
+
+        // Training details toggle
+        document.querySelectorAll('.training-section').forEach(section => {
+            const radios = section.querySelectorAll('input[type="radio"]');
+            const details = section.querySelector('.training-details');
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    if (details) details.classList.toggle('hidden', radio.value !== 'Yes');
+                });
+            });
+        });
+
+        // First aid date validation
+        const firstAidDate = document.getElementById('firstAidDate');
+        const firstAidWarning = document.getElementById('firstAidWarning');
+        firstAidDate?.addEventListener('change', function() {
+            const completed = new Date(this.value);
+            const now = new Date();
+            const diffYears = (now - completed) / (1000 * 60 * 60 * 24 * 365.25);
+            firstAidWarning.classList.toggle('hidden', diffYears <= 3);
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // LOCAL AUTHORITY AUTOCOMPLETE
+        // ═══════════════════════════════════════════════════════════════
+        const authoritySearch = document.getElementById('authoritySearch');
+        const authorityDropdown = document.getElementById('authorityDropdown');
+        const selectedAuthority = document.getElementById('selectedAuthority');
+
+        authoritySearch?.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            authorityDropdown.innerHTML = '';
+            selectedAuthority.value = '';
+
+            if (query.length < 2) {
+                authorityDropdown.classList.remove('active');
+                return;
+            }
+
+            const matches = authorities.filter(a => a.toLowerCase().includes(query));
+            if (matches.length > 0) {
+                matches.forEach(auth => {
+                    const div = document.createElement('div');
+                    div.className = 'autocomplete-item';
+                    div.textContent = auth;
+                    div.addEventListener('click', () => {
+                        authoritySearch.value = auth;
+                        selectedAuthority.value = auth;
+                        authorityDropdown.classList.remove('active');
+                    });
+                    authorityDropdown.appendChild(div);
+                });
+                authorityDropdown.classList.add('active');
+            } else {
+                authorityDropdown.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!authoritySearch?.contains(e.target) && !authorityDropdown?.contains(e.target)) {
+                authorityDropdown?.classList.remove('active');
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // REPEATING BLOCKS
+        // ═══════════════════════════════════════════════════════════════
+        function createRepeatingBlock(containerId, templateFn, addBtnId, onAdd, onRemove) {
+            const container = document.getElementById(containerId);
+            const addBtn = document.getElementById(addBtnId);
+            if (!container || !addBtn) return;
+
+            function addBlock() {
+                const index = container.children.length;
+                const block = document.createElement('div');
+                block.className = 'repeating-block';
+                block.innerHTML = templateFn(index);
+                container.appendChild(block);
+
+                block.querySelector('.remove-btn')?.addEventListener('click', () => {
+                    block.remove();
+                    if (onRemove) onRemove();
+                });
+
+                // Re-apply radio/checkbox styling
+                block.querySelectorAll('.radio-item, .checkbox-item').forEach(item => {
+                    const input = item.querySelector('input');
+                    item.addEventListener('click', (e) => {
+                        if (e.target === input) return;
+                        if (input.type === 'radio') {
+                            block.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
+                                r.closest('.radio-item')?.classList.remove('selected');
+                            });
+                            input.checked = true;
+                            item.classList.add('selected');
+                        } else {
+                            input.checked = !input.checked;
+                            item.classList.toggle('selected', input.checked);
+                        }
+                        input.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+                });
+
+                if (onAdd) onAdd(block);
+                return block;
+            }
+
+            addBtn.addEventListener('click', addBlock);
+            return { addBlock };
+        }
+
+        // Previous Names
+        createRepeatingBlock('previousNamesList', (i) => `
+            <div class="repeating-block-header"><span class="repeating-block-title">Previous Name ${i+1}</span><button type="button" class="remove-btn">Remove</button></div>
+            <div class="field-grid field-grid-2">
+                <div class="field full-width"><label class="field-label">Full name <span class="required">*</span></label><input type="text" name="prevNameFull[]" class="input" required></div>
+                <div class="field"><label class="field-label">Date from <span class="required">*</span></label><input type="date" name="prevNameStart[]" class="input" required></div>
+                <div class="field"><label class="field-label">Date to <span class="required">*</span></label><input type="date" name="prevNameEnd[]" class="input" required></div>
+            </div>
+        `, 'addPreviousName');
+
+        // Address History
+        const addressBlock = createRepeatingBlock('addressHistoryContainer', (i) => `
+            <div class="repeating-block-header"><span class="repeating-block-title">Previous Address ${i+1}</span><button type="button" class="remove-btn">Remove</button></div>
+            <div class="field full-width"><label class="field-label">Full address <span class="required">*</span></label><textarea name="historyAddress[]" class="textarea" rows="2" required></textarea></div>
+            <div class="field-grid field-grid-2 mt-4">
+                <div class="field"><label class="field-label">Country <span class="required">*</span></label><input type="text" name="historyCountry[]" class="input" value="United Kingdom" required></div>
+                <div class="field"><label class="field-label">Move-in date <span class="required">*</span></label><input type="date" name="historyMoveIn[]" class="input" required></div>
+                <div class="field"><label class="field-label">Move-out date <span class="required">*</span></label><input type="date" name="historyMoveOut[]" class="input" required></div>
+            </div>
+        `, 'addAddressHistory', (block) => {
+            block.querySelectorAll('input[type="date"]').forEach(input => {
+                input.addEventListener('change', calculateAddressHistoryCoverage);
+            });
+            calculateAddressHistoryCoverage();
+        }, calculateAddressHistoryCoverage);
+
+        // Employment History
+        const empBlock = createRepeatingBlock('employmentHistoryBlocks', (i) => `
+            <div class="repeating-block-header"><span class="repeating-block-title">Employment ${i+1}</span><button type="button" class="remove-btn">Remove</button></div>
+            <div class="field-grid field-grid-2">
+                <div class="field full-width"><label class="field-label">Employer name <span class="required">*</span></label><input type="text" name="empEmployer[]" class="input" required></div>
+                <div class="field full-width"><label class="field-label">Job title <span class="required">*</span></label><input type="text" name="empJobTitle[]" class="input" required></div>
+                <div class="field"><label class="field-label">Start date <span class="required">*</span></label><input type="date" name="empStart[]" class="input" required></div>
+                <div class="field"><label class="field-label">End date</label><span class="field-hint">Leave blank if current</span><input type="date" name="empEnd[]" class="input"></div>
+            </div>
+        `, 'addEmploymentHistory');
+        empBlock?.addBlock();
+
+        // References (add 2)
+        function addReferenceBlock(index) {
+            const container = document.getElementById('referenceBlocks');
+            const block = document.createElement('div');
+            block.className = 'repeating-block';
+            block.innerHTML = `
+                <div class="repeating-block-header"><span class="repeating-block-title">Reference ${index}</span></div>
+                <div class="field-grid field-grid-2">
+                    <div class="field"><label class="field-label">Full name <span class="required">*</span></label><input type="text" name="refName_${index}" class="input" required></div>
+                    <div class="field"><label class="field-label">How do they know you? <span class="required">*</span></label><input type="text" name="refRelation_${index}" class="input" placeholder="e.g. Manager, Colleague" required></div>
+                    <div class="field"><label class="field-label">Email <span class="required">*</span></label><input type="email" name="refEmail_${index}" class="input" required></div>
+                    <div class="field"><label class="field-label">Phone</label><input type="tel" name="refPhone_${index}" class="input"></div>
+                </div>
+            `;
+            container.appendChild(block);
+        }
+        addReferenceBlock(1);
+        addReferenceBlock(2);
+
+        // Adults
+        createRepeatingBlock('adultBlocks', (i) => `
+            <div class="repeating-block-header"><span class="repeating-block-title">Person ${i+1}</span><button type="button" class="remove-btn">Remove</button></div>
+            <div class="field-grid field-grid-2">
+                <div class="field"><label class="field-label">First name <span class="required">*</span></label><input type="text" name="adultFirst[]" class="input" required></div>
+                <div class="field"><label class="field-label">Last name <span class="required">*</span></label><input type="text" name="adultLast[]" class="input" required></div>
+                <div class="field"><label class="field-label">Date of birth <span class="required">*</span></label><input type="date" name="adultDOB[]" class="input" required></div>
+                <div class="field"><label class="field-label">Relationship to you <span class="required">*</span></label><input type="text" name="adultRelationship[]" class="input" placeholder="e.g. Partner, Child" required></div>
+            </div>
+        `, 'addAdult');
+
+        // Children
+        createRepeatingBlock('childBlocks', (i) => `
+            <div class="repeating-block-header"><span class="repeating-block-title">Child ${i+1}</span><button type="button" class="remove-btn">Remove</button></div>
+            <div class="field-grid field-grid-3">
+                <div class="field"><label class="field-label">First name <span class="required">*</span></label><input type="text" name="childFirst[]" class="input" required></div>
+                <div class="field"><label class="field-label">Last name <span class="required">*</span></label><input type="text" name="childLast[]" class="input" required></div>
+                <div class="field"><label class="field-label">Date of birth <span class="required">*</span></label><input type="date" name="childDOB[]" class="input" required></div>
+            </div>
+        `, 'addChild');
+
+        // ═══════════════════════════════════════════════════════════════
+        // HOUSEHOLD VISIBILITY BASED ON PREMISES
+        // ═══════════════════════════════════════════════════════════════
+        function updateHouseholdVisibility() {
+            const isDomestic = document.querySelector('input[name="premisesType"]:checked')?.value === 'Domestic';
+            const adultsSection = document.getElementById('adultsSection');
+            const childrenSection = document.getElementById('childrenSection');
+            if (adultsSection) adultsSection.style.display = isDomestic ? 'block' : 'none';
+            if (childrenSection) childrenSection.style.display = isDomestic ? 'block' : 'none';
+        }
+        document.querySelectorAll('input[name="premisesType"]').forEach(r => {
+            r.addEventListener('change', updateHouseholdVisibility);
+        });
+        updateHouseholdVisibility();
+
+        // ═══════════════════════════════════════════════════════════════
+        // SET TODAY'S DATE FOR DECLARATION
+        // ═══════════════════════════════════════════════════════════════
+        const declarationDate = document.getElementById('declarationDate');
+        if (declarationDate) {
+            declarationDate.value = new Date().toISOString().split('T')[0];
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // FORM SUBMISSION
+        // ═══════════════════════════════════════════════════════════════
+        function collectFormData() {
+            const val = id => (document.getElementById(id)?.value || '').trim();
+            const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+            const checked = name => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
+
+            const personal = {
+                title: val('title'), firstName: val('firstName'), middleNames: val('middleNames'),
+                lastName: val('lastName'), gender: radio('gender'), dob: val('dob'),
+                rightToWork: val('rightToWork'), email: val('email'), phone: val('phone'), niNumber: val('niNumber'),
+            };
+
+            const previousNames = [];
+            document.querySelectorAll('#previousNamesList .repeating-block').forEach(block => {
+                previousNames.push({
+                    fullName: block.querySelector('input[name="prevNameFull[]"]')?.value || '',
+                    dateFrom: block.querySelector('input[name="prevNameStart[]"]')?.value || '',
+                    dateTo: block.querySelector('input[name="prevNameEnd[]"]')?.value || '',
+                });
+            });
+
+            const homeAddress = {
+                line1: val('homeAddressLine1'), line2: val('homeAddressLine2'),
+                town: val('homeTown'), postcode: val('homePostcode'), moveIn: val('homeMoveIn'),
+            };
+
+            const addressHistory = [];
+            document.querySelectorAll('#addressHistoryContainer .repeating-block').forEach(block => {
+                addressHistory.push({
+                    address: block.querySelector('textarea[name="historyAddress[]"]')?.value || '',
+                    country: block.querySelector('input[name="historyCountry[]"]')?.value || '',
+                    moveIn: block.querySelector('input[name="historyMoveIn[]"]')?.value || '',
+                    moveOut: block.querySelector('input[name="historyMoveOut[]"]')?.value || '',
+                });
+            });
+
+            const premisesType = radio('premisesType');
+            const sameAsHome = radio('sameAddress') === 'Yes';
+            const premises = {
+                type: premisesType, sameAsHome, localAuthority: val('selectedAuthority'),
+                address: (!sameAsHome || premisesType === 'Non-domestic') ? {
+                    line1: val('childcareAddressLine1'), line2: val('childcareAddressLine2'),
+                    town: val('childcareTown'), postcode: val('childcarePostcode'),
+                } : null,
+                outdoorSpace: radio('outdoorSpace'), pets: radio('pets'), petsDetails: val('petsText'),
+            };
+
+            const service = {
+                ageGroups: checked('ageGroups'), workWithOthers: radio('workWithOthers'),
+                numberOfAssistants: val('numberOfAssistants'),
+            };
+
+            const qualifications = {
+                firstAidCompleted: radio('firstAidCompleted'), firstAidOrg: val('firstAidOrg'), firstAidDate: val('firstAidDate'),
+                safeguardingCompleted: radio('safeguardingCompleted'), safeguardingOrg: val('safeguardingOrg'), safeguardingDate: val('safeguardingDate'),
+                eyfsCompleted: radio('eyfsCompleted'), eyfsOrg: val('eyfsOrg'), eyfsCourse: val('eyfsCourse'), eyfsDate: val('eyfsDate'),
+                level2QualCompleted: radio('level2QualCompleted'), level2QualOrg: val('level2QualOrg'), level2QualDate: val('level2QualDate'),
+                foodHygieneCompleted: radio('foodHygieneCompleted'), foodHygieneOrg: val('foodHygieneOrg'), foodHygieneDate: val('foodHygieneDate'),
+            };
+
+            const employment = [];
+            document.querySelectorAll('#employmentHistoryBlocks .repeating-block').forEach(block => {
+                employment.push({
+                    employer: block.querySelector('input[name="empEmployer[]"]')?.value || '',
+                    jobTitle: block.querySelector('input[name="empJobTitle[]"]')?.value || '',
+                    startDate: block.querySelector('input[name="empStart[]"]')?.value || '',
+                    endDate: block.querySelector('input[name="empEnd[]"]')?.value || '',
+                });
+            });
+
+            const references = {
+                ref1: { name: document.querySelector('input[name="refName_1"]')?.value || '', relationship: document.querySelector('input[name="refRelation_1"]')?.value || '', email: document.querySelector('input[name="refEmail_1"]')?.value || '', phone: document.querySelector('input[name="refPhone_1"]')?.value || '' },
+                ref2: { name: document.querySelector('input[name="refName_2"]')?.value || '', relationship: document.querySelector('input[name="refRelation_2"]')?.value || '', email: document.querySelector('input[name="refEmail_2"]')?.value || '', phone: document.querySelector('input[name="refPhone_2"]')?.value || '' },
+            };
+
+            const adults = [];
+            document.querySelectorAll('#adultBlocks .repeating-block').forEach(block => {
+                adults.push({
+                    firstName: block.querySelector('input[name="adultFirst[]"]')?.value || '',
+                    lastName: block.querySelector('input[name="adultLast[]"]')?.value || '',
+                    dob: block.querySelector('input[name="adultDOB[]"]')?.value || '',
+                    relationship: block.querySelector('input[name="adultRelationship[]"]')?.value || '',
+                });
+            });
+            const children = [];
+            document.querySelectorAll('#childBlocks .repeating-block').forEach(block => {
+                children.push({
+                    firstName: block.querySelector('input[name="childFirst[]"]')?.value || '',
+                    lastName: block.querySelector('input[name="childLast[]"]')?.value || '',
+                    dob: block.querySelector('input[name="childDOB[]"]')?.value || '',
+                });
+            });
+            const household = { adultsInHome: radio('adultsInHome'), adults, childrenInHome: radio('childrenInHome'), children };
+
+            const suitability = {
+                healthCondition: radio('healthCondition'), healthConditionDetails: val('healthConditionDetailsTextarea'),
+                disqualified: radio('disqualified'), socialServices: radio('socialServices'),
+                socialServicesInfo: val('socialServicesInfo'), hasDBS: radio('hasDBS'), dbsNumber: val('dbsNumber'),
+            };
+
+            const declaration = {
+                consent1: document.getElementById('consent1')?.checked || false,
+                consent2: document.getElementById('consent2')?.checked || false,
+                consent3: document.getElementById('consent3')?.checked || false,
+                consent4: document.getElementById('consent4')?.checked || false,
+                consent5: document.getElementById('consent5')?.checked || false,
+                signature: val('declarationSignature'), printName: val('declarationPrintName'), date: val('declarationDate'),
+            };
+
+            return { personal, previousNames, homeAddress, addressHistory, premises, service, qualifications, employment, references, household, suitability, declaration };
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const validation = validateSection(currentSection);
+            if (!validation.isValid) {
+                errorMessage.textContent = validation.message;
+                errorSummary.classList.add('active');
+                errorSummary.focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Submitting...';
+
+            try {
+                const payload = collectFormData();
+                const res = await fetch('/api/applications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Submission failed');
+
+                document.querySelector('.form-body').innerHTML = `
+                    <div style="text-align:center; padding: 3rem 1rem;">
+                        <div style="width:80px;height:80px;border-radius:50%;background:var(--rk-success-bg);display:inline-flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--rk-success)" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <h2 style="font-family:var(--font-display);font-size:2rem;color:var(--rk-gray-900);margin-bottom:0.75rem;">Application Submitted</h2>
+                        <p style="font-size:1.125rem;color:var(--rk-gray-600);margin-bottom:1.5rem;">Thank you for your application. Your reference number is:</p>
+                        <div style="display:inline-block;background:var(--rk-primary-light);border:2px solid var(--rk-primary);border-radius:var(--radius-lg);padding:1rem 2rem;margin-bottom:2rem;">
+                            <span style="font-family:var(--font-display);font-size:1.75rem;font-weight:700;color:var(--rk-primary);">${data.id}</span>
+                        </div>
+                        <p style="color:var(--rk-gray-600);max-width:500px;margin:0 auto 2rem;">Please save this reference number. We will be in touch with next steps regarding your registration checks.</p>
+                        <a href="/register" style="display:inline-block;padding:0.75rem 2rem;background:var(--rk-primary);color:white;border-radius:var(--radius-md);text-decoration:none;font-weight:600;">Submit Another Application</a>
+                    </div>
+                `;
+                document.querySelector('.sidebar').style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                errorMessage.textContent = err.message || 'Something went wrong. Please try again.';
+                errorSummary.classList.add('active');
+                errorSummary.focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // INITIALIZE
+        // ═══════════════════════════════════════════════════════════════
+        showSection(0);
+        calculateAddressHistoryCoverage();
+
+    })();
+    </script>
+</body>
+</html>
