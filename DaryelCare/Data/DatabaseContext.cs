@@ -23,10 +23,8 @@ public class DatabaseContext
 
     public async Task InitSchema()
     {
-        var schemaPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "db", "schema.sql");
-        if (!File.Exists(schemaPath))
-            schemaPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "db", "schema.sql");
-        if (!File.Exists(schemaPath))
+        var schemaPath = FindFile("db", "schema.sql");
+        if (schemaPath is null)
             return;
 
         var sql = await File.ReadAllTextAsync(schemaPath);
@@ -39,10 +37,8 @@ public class DatabaseContext
     public async Task Seed()
     {
         await InitSchema();
-        var seedPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "db", "seed.sql");
-        if (!File.Exists(seedPath))
-            seedPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "db", "seed.sql");
-        if (!File.Exists(seedPath))
+        var seedPath = FindFile("db", "seed.sql");
+        if (seedPath is null)
             return;
 
         var sql = await File.ReadAllTextAsync(seedPath);
@@ -50,6 +46,19 @@ public class DatabaseContext
         await conn.OpenAsync();
         await using var cmd = new NpgsqlCommand(sql, conn);
         await cmd.ExecuteNonQueryAsync();
+    }
+
+    // Search candidate paths for SQL files across local dev and container layouts.
+    private static string? FindFile(string folder, string fileName)
+    {
+        string[] candidates =
+        [
+            Path.Combine(AppContext.BaseDirectory, folder, fileName),
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", folder, fileName),
+            Path.Combine(Directory.GetCurrentDirectory(), "..", folder, fileName),
+            Path.Combine(Directory.GetCurrentDirectory(), folder, fileName),
+        ];
+        return candidates.FirstOrDefault(File.Exists);
     }
 
     private static string ConvertPostgresUrl(string url)

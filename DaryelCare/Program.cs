@@ -10,7 +10,7 @@ builder.Services.AddSingleton<ApplicationService>();
 
 var app = builder.Build();
 
-var port = app.Configuration.GetValue<int?>("Port") ?? 3000;
+var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 app.Urls.Clear();
 app.Urls.Add($"http://0.0.0.0:{port}");
 
