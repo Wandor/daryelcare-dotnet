@@ -1036,7 +1036,7 @@
                         <p class="main-subtitle">Monitor and manage childminder registrations</p>
                     </div>
                     <div class="header-actions">
-                        <button class="btn btn-secondary">
+                        <button class="btn btn-secondary" onclick="exportApplications()">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             Export
                         </button>
@@ -1283,27 +1283,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Applicant Email Address</label>
-                    <input type="email" class="form-input" placeholder="applicant@email.com">
-                    <div class="form-hint">An invitation will be sent to complete Form CMA-1</div>
+                <div id="inviteForm">
+                    <div class="form-group">
+                        <label class="form-label">Applicant Email Address</label>
+                        <input type="email" id="inviteEmail" class="form-input" placeholder="applicant@email.com" required>
+                        <div class="form-hint">An invitation will be sent to complete Form CMA-1</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Applicant Full Name</label>
+                        <input type="text" id="inviteName" class="form-input" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Registration Type</label>
+                        <select id="inviteType" class="form-input">
+                            <option value="new">New Registration</option>
+                            <option value="transfer">Transfer from Ofsted</option>
+                            <option value="transfer-agency">Transfer from Another Agency</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Applicant Full Name</label>
-                    <input type="text" class="form-input" placeholder="Enter full name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Registration Type</label>
-                    <select class="form-input">
-                        <option value="new">New Registration</option>
-                        <option value="transfer">Transfer from Ofsted</option>
-                        <option value="transfer-agency">Transfer from Another Agency</option>
-                    </select>
+                <div id="inviteSuccess" style="display:none; text-align:center; padding: var(--space-lg) 0;">
+                    <div style="width:60px;height:60px;border-radius:50%;background:#d1e7dd;display:inline-flex;align-items:center;justify-content:center;margin-bottom:var(--space-md);">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0f5132" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div style="font-weight:600;font-size:1.1rem;margin-bottom:var(--space-sm);">Application Created</div>
+                    <div style="color:var(--text-secondary);margin-bottom:var(--space-md);">Reference: <strong id="inviteRefId"></strong></div>
+                    <div style="background:var(--bg-subtle);padding:var(--space-md);border-radius:var(--radius-md);word-break:break-all;">
+                        <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:var(--space-xs);">Registration Link</div>
+                        <a id="inviteLink" href="#" target="_blank" style="color:var(--rk-accent);font-weight:500;"></a>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('newAppModal')">Cancel</button>
-                <button class="btn btn-primary">Send Invitation</button>
+                <button class="btn btn-secondary" onclick="closeInviteModal()">Cancel</button>
+                <button class="btn btn-primary" id="inviteSendBtn" onclick="sendInvitation()">Send Invitation</button>
             </div>
         </div>
     </div>
@@ -2460,11 +2473,11 @@
                 <div class="detail-section" style="margin-top: var(--space-xl);">
                     <div class="detail-section-title">Quick Actions</div>
                     <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm);">
-                        ${app.stage !== 'registered' ? `<button class="btn btn-primary btn-sm">Send Reminder</button>` : ''}
-                        <button class="btn btn-secondary btn-sm">View Forms</button>
-                        <button class="btn btn-secondary btn-sm">Generate Report</button>
-                        <button class="btn btn-outline btn-sm">Add Note</button>
-                        ${app.stage === 'review' ? `<button class="btn btn-success btn-sm">Approve Application</button>` : ''}
+                        ${app.stage !== 'registered' ? `<button class="btn btn-primary btn-sm" onclick="addTimelineNote('${app.id}', 'Reminder sent to applicant', 'action')">Send Reminder</button>` : ''}
+                        <button class="btn btn-secondary btn-sm" onclick="window.open('/register', '_blank')">View Forms</button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportApplications()">Generate Report</button>
+                        <button class="btn btn-outline btn-sm" onclick="promptAddNote('${app.id}')">Add Note</button>
+                        ${app.stage === 'review' ? `<button class="btn btn-success btn-sm" onclick="approveApplication('${app.id}')">Approve Application</button>` : ''}
                     </div>
                 </div>
             `;
@@ -2557,8 +2570,8 @@
                 ` : ''}
 
                 <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-lg);">
-                    <button class="btn btn-secondary">View Full Form</button>
-                    <button class="btn btn-outline">Send Reminder</button>
+                    <button class="btn btn-secondary" onclick="window.open('/register', '_blank')">View Full Form</button>
+                    <button class="btn btn-outline" onclick="addTimelineNote('${app.id}', 'Reminder sent to connected person: ${person.name}', 'action')">Send Reminder</button>
                 </div>
             `;
 
@@ -2578,13 +2591,158 @@
         }
 
         // ==========================================
+        // SEND INVITATION
+        // ==========================================
+
+        async function sendInvitation() {
+            const email = document.getElementById('inviteEmail').value.trim();
+            const fullName = document.getElementById('inviteName').value.trim();
+            if (!email || !fullName) {
+                alert('Please enter both email and full name.');
+                return;
+            }
+
+            const names = fullName.split(/\s+/);
+            const firstName = names[0];
+            const lastName = names.slice(1).join(' ') || firstName;
+
+            const btn = document.getElementById('inviteSendBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+
+            try {
+                const res = await fetch('/api/applications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        personal: { firstName, lastName, email },
+                        premises: { type: 'domestic' }
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to create');
+
+                const regLink = window.location.origin + '/register';
+                document.getElementById('inviteRefId').textContent = data.id;
+                document.getElementById('inviteLink').textContent = regLink;
+                document.getElementById('inviteLink').href = regLink;
+                document.getElementById('inviteForm').style.display = 'none';
+                document.getElementById('inviteSuccess').style.display = 'block';
+                btn.style.display = 'none';
+
+                await loadApplications();
+                renderPipeline();
+                renderComplianceTable();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Invitation';
+            }
+        }
+
+        function closeInviteModal() {
+            closeModal('newAppModal');
+            document.getElementById('inviteForm').style.display = '';
+            document.getElementById('inviteSuccess').style.display = 'none';
+            document.getElementById('inviteSendBtn').style.display = '';
+            document.getElementById('inviteEmail').value = '';
+            document.getElementById('inviteName').value = '';
+        }
+
+        // ==========================================
+        // EXPORT APPLICATIONS AS CSV
+        // ==========================================
+
+        function exportApplications() {
+            if (!applications.length) {
+                alert('No applications to export.');
+                return;
+            }
+            const headers = [
+                'ID', 'Name', 'Email', 'Phone', 'Stage', 'Risk',
+                'Progress', 'Start Date', 'Last Updated',
+                'Premises Type', 'Local Authority'
+            ];
+            const rows = applications.map(a => [
+                a.id, a.name, a.email, a.phone, a.stage, a.risk,
+                a.progress, a.startDate || '', a.lastUpdated || '',
+                a.premisesType || '', a.localAuthority || ''
+            ]);
+
+            const csv = [headers, ...rows]
+                .map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(','))
+                .join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'applications-export.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ==========================================
+        // QUICK ACTIONS
+        // ==========================================
+
+        async function addTimelineNote(appId, note, type) {
+            try {
+                await fetch(`/api/applications/${appId}/timeline`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event: note, type: type || 'note' })
+                });
+                await loadApplications();
+                renderPipeline();
+                renderComplianceTable();
+                openDetailPanel(appId);
+            } catch (err) {
+                alert('Failed to add note: ' + err.message);
+            }
+        }
+
+        function promptAddNote(appId) {
+            const note = prompt('Enter a note for this application:');
+            if (note && note.trim()) {
+                addTimelineNote(appId, note.trim(), 'note');
+            }
+        }
+
+        async function approveApplication(appId) {
+            if (!confirm('Approve this application and move to approved stage?')) return;
+            try {
+                await fetch(`/api/applications/${appId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stage: 'approved' })
+                });
+                await fetch(`/api/applications/${appId}/timeline`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event: 'Application approved',
+                        type: 'complete'
+                    })
+                });
+                await loadApplications();
+                renderPipeline();
+                renderComplianceTable();
+                openDetailPanel(appId);
+            } catch (err) {
+                alert('Failed to approve: ' + err.message);
+            }
+        }
+
+        // ==========================================
         // INITIALIZATION
         // ==========================================
 
         async function init() {
             await loadApplications();
             if (applications.length === 0) {
-                applications = _hardcodedApplications; // fallback if API unavailable
+                applications = _hardcodedApplications;
             }
             renderPipeline();
             renderComplianceTable();
