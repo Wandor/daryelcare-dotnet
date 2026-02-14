@@ -19,9 +19,9 @@ public class DatabaseContext
         _dataSource = NpgsqlDataSource.Create(connStr);
     }
 
-    public NpgsqlConnection CreateConnection() => _dataSource.CreateConnection();
+    public virtual NpgsqlConnection CreateConnection() => _dataSource.CreateConnection();
 
-    public async Task InitSchema()
+    public virtual async Task InitSchema()
     {
         var schemaPath = FindFile("db", "schema.sql");
         if (schemaPath is null)
@@ -34,7 +34,7 @@ public class DatabaseContext
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async Task Seed()
+    public virtual async Task Seed()
     {
         await InitSchema();
         var seedPath = FindFile("db", "seed.sql");

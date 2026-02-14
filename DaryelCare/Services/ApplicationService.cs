@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Npgsql;
@@ -16,13 +17,15 @@ public class ApplicationService
 
     public ApplicationService(DatabaseContext db) => _db = db;
 
-    private static string GenerateId(long seqVal)
+    internal static string EscapeHtml(string input) => WebUtility.HtmlEncode(input);
+
+    internal static string GenerateId(long seqVal)
     {
         var year = DateTime.Now.Year;
         return $"RK-{year}-{seqVal:D5}";
     }
 
-    private static int CalculateProgress(JsonNode? checks)
+    internal static int CalculateProgress(JsonNode? checks)
     {
         if (checks is not JsonObject obj || obj.Count == 0) return 0;
         var total = obj.Count;
@@ -238,7 +241,7 @@ public class ApplicationService
         return result;
     }
 
-    public async Task<string> CreateApplication(JsonNode body)
+    public virtual async Task<string> CreateApplication(JsonNode body)
     {
         await using var conn = _db.CreateConnection();
         await conn.OpenAsync();
@@ -296,10 +299,10 @@ public class ApplicationService
         await using var cmd = new NpgsqlCommand(sql, conn, tx);
         cmd.Parameters.AddWithValue("id", id);
         cmd.Parameters.AddWithValue("title", (object?)personal?["title"]?.GetValue<string>() ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("firstName", personal?["firstName"]?.GetValue<string>() ?? "");
+        cmd.Parameters.AddWithValue("firstName", EscapeHtml(personal?["firstName"]?.GetValue<string>() ?? ""));
         cmd.Parameters.AddWithValue("middleNames", (object?)personal?["middleNames"]?.GetValue<string>() ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("lastName", personal?["lastName"]?.GetValue<string>() ?? "");
-        cmd.Parameters.AddWithValue("email", personal?["email"]?.GetValue<string>() ?? "");
+        cmd.Parameters.AddWithValue("lastName", EscapeHtml(personal?["lastName"]?.GetValue<string>() ?? ""));
+        cmd.Parameters.AddWithValue("email", EscapeHtml(personal?["email"]?.GetValue<string>() ?? ""));
         cmd.Parameters.AddWithValue("phone", (object?)personal?["phone"]?.GetValue<string>() ?? DBNull.Value);
         cmd.Parameters.AddWithValue("dob", (object?)personal?["dob"]?.GetValue<string>() ?? DBNull.Value);
         cmd.Parameters.AddWithValue("gender", (object?)personal?["gender"]?.GetValue<string>() ?? DBNull.Value);
@@ -346,7 +349,7 @@ public class ApplicationService
         return id;
     }
 
-    public async Task<List<Dictionary<string, object?>>> GetAllApplications()
+    public virtual async Task<List<Dictionary<string, object?>>> GetAllApplications()
     {
         await using var conn = _db.CreateConnection();
         await conn.OpenAsync();
@@ -396,7 +399,7 @@ public class ApplicationService
         return results;
     }
 
-    public async Task<Dictionary<string, object?>?> GetApplication(string id)
+    public virtual async Task<Dictionary<string, object?>?> GetApplication(string id)
     {
         await using var conn = _db.CreateConnection();
         await conn.OpenAsync();
@@ -436,7 +439,7 @@ public class ApplicationService
         return shape;
     }
 
-    public async Task<bool> UpdateApplication(string id, JsonNode updates)
+    public virtual async Task<bool> UpdateApplication(string id, JsonNode updates)
     {
         var allowed = new Dictionary<string, (string col, bool isJson)>
         {
@@ -487,7 +490,7 @@ public class ApplicationService
         return rows > 0;
     }
 
-    public async Task<bool> DeleteApplication(string id)
+    public virtual async Task<bool> DeleteApplication(string id)
     {
         await using var conn = _db.CreateConnection();
         await conn.OpenAsync();
@@ -497,7 +500,7 @@ public class ApplicationService
         return await cmd.ExecuteNonQueryAsync() > 0;
     }
 
-    public async Task<Dictionary<string, object?>> AddTimelineEvent(
+    public virtual async Task<Dictionary<string, object?>> AddTimelineEvent(
         string applicationId, string eventText, string type = "action")
     {
         await using var conn = _db.CreateConnection();
@@ -506,7 +509,7 @@ public class ApplicationService
             "INSERT INTO timeline_events (application_id, event, type) VALUES (@appId, @event, @type) RETURNING *",
             conn);
         cmd.Parameters.AddWithValue("appId", applicationId);
-        cmd.Parameters.AddWithValue("event", eventText);
+        cmd.Parameters.AddWithValue("event", EscapeHtml(eventText));
         cmd.Parameters.AddWithValue("type", type);
         await using var reader = await cmd.ExecuteReaderAsync();
         await reader.ReadAsync();
